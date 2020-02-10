@@ -16,7 +16,8 @@ class Faction extends AbstractVirtue{
   {
     int factionNameIndex = 1;
     String stringedValue = factEnum.toString();
-    return stringedValue.split('.')[factionNameIndex];
+    stringedValue = stringedValue.split('.')[factionNameIndex];
+    return stringedValue == 'ninguno' ? "" : stringedValue;
   }
 
   @override

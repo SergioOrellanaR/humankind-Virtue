@@ -108,7 +108,7 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
           }
         }
       });
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(Duration(milliseconds: 150));
     }
 
     _loopActiveOnOperation = false;
@@ -116,15 +116,15 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
 
   _pointsContainer({@required bool isWill}) {
     return Container(
-      width: _screenSize.width * 0.14,
-      height: _screenSize.width * 0.14,
+      width: _screenSize.width * 0.12,
+      height: _screenSize.width * 0.12,
       child: _valueToCounter(isWill: isWill),
       alignment: Alignment.center,
       decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: _counterGradient(isWill: isWill),
           border: Border.all(
-              width: 8.0,
+              width: 6.0,
               color: Color.fromRGBO(180, 180, 180, 1.0),
               style: BorderStyle.solid),
           boxShadow: kElevationToShadow[12]),

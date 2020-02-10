@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:humankind/src/config/UserConfig.dart';
+import 'package:humankind/src/controllers/VirtuesController.dart';
+import 'package:humankind/src/models/PlayerInformation.dart';
 import 'package:humankind/utils/themeValues.dart' as theme;
 import 'package:humankind/utils/utils.dart' as utils;
 
 class VirtueCard extends StatefulWidget {
-  final int player;
+  final PlayerInformation player;
+  final PageController pageViewController;
 
-  VirtueCard(this.player);
+  VirtueCard({@required this.player, this.pageViewController});
 
   @override
   _VirtueCardState createState() => _VirtueCardState();
@@ -16,14 +19,36 @@ class VirtueCard extends StatefulWidget {
 
 class _VirtueCardState extends State<VirtueCard> {
   Size _screenSize;
-  final prefs = new UserConfig();
   String _cardImageUrl;
+  VirtuesController _virtuesController;
+  int _playerValue;
+  final prefs = new UserConfig();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _virtuesController = widget.player.virtuesController;
+    _playerValue = widget.player.playerNumber;
+  }
 
   @override
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.of(context).size;
     _cardImageUrl = prefs.isDarkTheme ? 'assets/card2.png' : 'assets/card1.png';
-    return Center(child: _virtueTable());
+    // return Center(child: _virtueTable());
+    return _mainScreen();
+  }
+
+  Row _mainScreen() {
+    return Row(
+      children: <Widget>[
+        _playerValue == 1 ? _reRoll() : _changePageArrow(),
+        _virtueTable(),
+        _playerValue == 1 ? _changePageArrow() : _reRoll(),
+      ],
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    );
   }
 
   _virtueTable() {
@@ -41,11 +66,16 @@ class _VirtueCardState extends State<VirtueCard> {
                   SizedBox(
                     height: _screenSize.height * 0.03,
                   ),
-                  _virtueLineAndSpace("abismales", "-1"),
-                  _virtueLineAndSpace("", "2"),
-                  _virtueLineAndSpace("acracia", "0"),
-                  _virtueLineAndSpace("quimera", "-2"),
-                  _virtueLineAndSpace("corporacion", "1"),
+                  _virtueLineAndSpace(_virtuesController.factions[0].toString(),
+                      _virtuesController.virtuesValues[0].value),
+                  _virtueLineAndSpace(_virtuesController.factions[1].toString(),
+                      _virtuesController.virtuesValues[1].value),
+                  _virtueLineAndSpace(_virtuesController.factions[2].toString(),
+                      _virtuesController.virtuesValues[2].value),
+                  _virtueLineAndSpace(_virtuesController.factions[3].toString(),
+                      _virtuesController.virtuesValues[3].value),
+                  _virtueLineAndSpace(_virtuesController.factions[4].toString(),
+                      _virtuesController.virtuesValues[4].value),
                   SizedBox(
                     height: _screenSize.height * 0.05,
                   )
@@ -62,7 +92,7 @@ class _VirtueCardState extends State<VirtueCard> {
   }
 
   Text _cardTitle() => Text(
-        widget.player == 1 ? prefs.playerOne : prefs.playerTwo,
+        widget.player.playerNumber == 1 ? prefs.playerOne : prefs.playerTwo,
         style: TextStyle(
             color: theme.defaultThemeColor(prefs.isDarkTheme),
             fontWeight: FontWeight.bold),
@@ -129,5 +159,38 @@ class _VirtueCardState extends State<VirtueCard> {
           bottomRight: Radius.circular(13.0),
           bottomLeft: Radius.circular(0.0)),
     );
+  }
+
+  _reRoll() {
+    return FloatingActionButton(
+      child: Icon(Icons.refresh),
+      backgroundColor: theme.oppositeThemeColor(prefs.isDarkTheme),
+      mini: true,
+      heroTag: "card$_playerValue",
+      onPressed: (){
+        setState(() {
+          widget.player.virtuesController.reshuffle();
+          _virtuesController = widget.player.virtuesController;
+        });
+      },
+    );
+  }
+
+  _changePageArrow() {
+    IconData iconData = _playerValue == 1
+        ? Icons.keyboard_arrow_right
+        : Icons.keyboard_arrow_left;
+    return GestureDetector(child: Icon(iconData, size: _screenSize.width*0.13),
+    onTap: (){
+      if(_playerValue == 1)
+      {
+        widget.pageViewController.nextPage(duration: Duration(milliseconds: 400), curve: Curves.linearToEaseOut,);
+      }
+      else
+      {
+        widget.pageViewController.previousPage(duration: Duration(milliseconds: 400), curve: Curves.linearToEaseOut,);
+      }
+      
+    },);
   }
 }

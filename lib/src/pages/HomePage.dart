@@ -1,10 +1,10 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:humankind/src/config/UserConfig.dart';
 import 'package:humankind/src/models/PlayerInformation.dart';
 import 'package:humankind/src/widgets/PlayerInformationBar.dart';
 import 'package:humankind/src/widgets/VirtueCardWidget.dart';
+import 'package:humankind/utils/themeValues.dart' as theme;
 
 class HomePage extends StatefulWidget {
   @override
@@ -16,6 +16,7 @@ class _HomePageState extends State<HomePage> {
   PlayerInformation playerOne;
   PlayerInformation playerTwo;
   Size _screenSize;
+  final _pageViewController = PageController();
 
   @override
   void initState() {
@@ -44,9 +45,11 @@ class _HomePageState extends State<HomePage> {
         SizedBox(width: _screenSize.width * 0.08,),
         FloatingActionButton(
           child: Icon(Icons.settings),
+          backgroundColor: theme.oppositeThemeColor(prefs.isDarkTheme),
           onPressed: () {
             Navigator.pushNamed(context, "settings");
           },
+          heroTag: "settingsButton",
         ),
       ],
       mainAxisAlignment: MainAxisAlignment.start,
@@ -58,9 +61,9 @@ class _HomePageState extends State<HomePage> {
       children: <Widget>[
         _playerInformationBar(playerInformation: playerTwo),
         _virtueCard(),
+        Expanded(child: SizedBox(),),
         _playerInformationBar(playerInformation: playerOne)
       ],
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
     );
   }
 
@@ -75,11 +78,21 @@ class _HomePageState extends State<HomePage> {
     return Container();
   }
 
-  _playerInformationBar({PlayerInformation playerInformation}) {   
+  PlayerInformationBar _playerInformationBar({PlayerInformation playerInformation}) {   
     return PlayerInformationBar(playerInformation: playerInformation);
   }
 
   _virtueCard() {
-    return VirtueCard(1);
+    return Container(
+      width: double.infinity,
+      height: _screenSize.height * 0.6,
+      child: PageView(
+        controller: _pageViewController,
+        children: <Widget>[
+          VirtueCard(player: playerOne, pageViewController: _pageViewController),
+          VirtueCard(player: playerTwo, pageViewController: _pageViewController)
+        ],
+      ),
+    );
   }
 }
