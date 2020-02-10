@@ -26,7 +26,6 @@ class _VirtueCardState extends State<VirtueCard> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _virtuesController = widget.player.virtuesController;
     _playerValue = widget.player.playerNumber;
@@ -43,60 +42,66 @@ class _VirtueCardState extends State<VirtueCard> {
   Row _mainScreen() {
     return Row(
       children: <Widget>[
-        _playerValue == 1 ? _reRoll() : _changePageArrow(),
+        _playerValue == 1 ? Container(width: _screenSize.width*0.13,) : _changePageArrow(),
         _virtueTable(),
-        _playerValue == 1 ? _changePageArrow() : _reRoll(),
+        _playerValue == 1 ? _changePageArrow() : Container(width: _screenSize.width*0.13,),
       ],
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
     );
   }
 
   _virtueTable() {
-    return Row(
-      children: <Widget>[
-        Wrap(
-          children: <Widget>[
-            Container(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: _screenSize.height * 0.02,
-                  ),
-                  _cardTitle(),
-                  SizedBox(
-                    height: _screenSize.height * 0.03,
-                  ),
-                  _virtueLineAndSpace(_virtuesController.factions[0].toString(),
-                      _virtuesController.virtuesValues[0].value),
-                  _virtueLineAndSpace(_virtuesController.factions[1].toString(),
-                      _virtuesController.virtuesValues[1].value),
-                  _virtueLineAndSpace(_virtuesController.factions[2].toString(),
-                      _virtuesController.virtuesValues[2].value),
-                  _virtueLineAndSpace(_virtuesController.factions[3].toString(),
-                      _virtuesController.virtuesValues[3].value),
-                  _virtueLineAndSpace(_virtuesController.factions[4].toString(),
-                      _virtuesController.virtuesValues[4].value),
-                  SizedBox(
-                    height: _screenSize.height * 0.05,
-                  )
-                ],
-                mainAxisAlignment: MainAxisAlignment.center,
-              ),
-              decoration: BoxDecoration(image: _cardImage()),
-            )
-          ],
-        ),
-      ],
-      mainAxisAlignment: MainAxisAlignment.center,
+    return GestureDetector(
+      onHorizontalDragUpdate: (_){},
+          child: Row(
+        children: <Widget>[
+          Wrap(
+            children: <Widget>[
+              Container(
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: _screenSize.height * 0.02,
+                    ),
+                    _cardTitle(),
+                    SizedBox(
+                      height: _screenSize.height * 0.03,
+                    ),
+                    _virtueLineAndSpace(_virtuesController.factions[0].toString(),
+                        _virtuesController.virtuesValues[0].value),
+                    _virtueLineAndSpace(_virtuesController.factions[1].toString(),
+                        _virtuesController.virtuesValues[1].value),
+                    _virtueLineAndSpace(_virtuesController.factions[2].toString(),
+                        _virtuesController.virtuesValues[2].value),
+                    _virtueLineAndSpace(_virtuesController.factions[3].toString(),
+                        _virtuesController.virtuesValues[3].value),
+                    _virtueLineAndSpace(_virtuesController.factions[4].toString(),
+                        _virtuesController.virtuesValues[4].value),
+                    _reRoll(),
+                    SizedBox(
+                      height: _screenSize.height * 0.02,
+                    ),
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                decoration: BoxDecoration(image: _cardImage()),
+              )
+            ],
+          ),
+        ],
+        mainAxisAlignment: MainAxisAlignment.center,
+      ),
     );
   }
 
-  Text _cardTitle() => Text(
-        widget.player.playerNumber == 1 ? prefs.playerOne : prefs.playerTwo,
-        style: TextStyle(
-            color: theme.defaultThemeColor(prefs.isDarkTheme),
-            fontWeight: FontWeight.bold),
-      );
+  Text _cardTitle() {
+    return Text(
+      widget.player.playerNumber == 1 ? prefs.playerOne : prefs.playerTwo,
+      style: TextStyle(
+          color: theme.defaultThemeColor(prefs.isDarkTheme),
+          fontWeight: FontWeight.bold),
+    );
+  }
 
   DecorationImage _cardImage() {
     return DecorationImage(image: AssetImage(_cardImageUrl));
@@ -167,7 +172,7 @@ class _VirtueCardState extends State<VirtueCard> {
       backgroundColor: theme.oppositeThemeColor(prefs.isDarkTheme),
       mini: true,
       heroTag: "card$_playerValue",
-      onPressed: (){
+      onPressed: () {
         setState(() {
           widget.player.virtuesController.reshuffle();
           _virtuesController = widget.player.virtuesController;
@@ -180,17 +185,21 @@ class _VirtueCardState extends State<VirtueCard> {
     IconData iconData = _playerValue == 1
         ? Icons.keyboard_arrow_right
         : Icons.keyboard_arrow_left;
-    return GestureDetector(child: Icon(iconData, size: _screenSize.width*0.13),
-    onTap: (){
-      if(_playerValue == 1)
-      {
-        widget.pageViewController.nextPage(duration: Duration(milliseconds: 400), curve: Curves.linearToEaseOut,);
-      }
-      else
-      {
-        widget.pageViewController.previousPage(duration: Duration(milliseconds: 400), curve: Curves.linearToEaseOut,);
-      }
-      
-    },);
+    return GestureDetector(
+      child: Icon(iconData, size: _screenSize.width * 0.13),
+      onTap: () {
+        if (_playerValue == 1) {
+          widget.pageViewController.nextPage(
+            duration: Duration(milliseconds: 400),
+            curve: Curves.linearToEaseOut,
+          );
+        } else {
+          widget.pageViewController.previousPage(
+            duration: Duration(milliseconds: 400),
+            curve: Curves.linearToEaseOut,
+          );
+        }
+      },
+    );
   }
 }
