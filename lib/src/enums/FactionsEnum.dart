@@ -1,0 +1,1 @@
+enum Factions { none, abismales, quimera, acracia, corporacion }
