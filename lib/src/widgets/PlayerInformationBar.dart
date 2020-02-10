@@ -165,6 +165,6 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
             _savedWill = _willPoints;
           });
         },
-        child: Icon(Icons.rotate_left));
+        child: Icon(Icons.cached));
   }
 }
