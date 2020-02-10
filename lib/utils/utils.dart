@@ -2,7 +2,8 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:humankind/src/enums/FactionsEnum.dart';
 
 
-final String appName = 'Humankind';
+final String appName = 'Humankind Virtue';
+final String version = '1.0.0';
 
 stringfiedFaction(Factions factEnum)
   {

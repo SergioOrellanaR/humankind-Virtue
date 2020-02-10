@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:humankind/src/config/UserConfig.dart';
+import 'package:humankind/utils/themeValues.dart' as theme;
+import 'package:humankind/utils/utils.dart' as utils;
 
 class VirtueCard extends StatefulWidget {
+  final int player;
+
+  VirtueCard(this.player);
+
   @override
   _VirtueCardState createState() => _VirtueCardState();
 }
@@ -29,7 +35,11 @@ class _VirtueCardState extends State<VirtueCard> {
               child: Column(
                 children: <Widget>[
                   SizedBox(
-                    height: _screenSize.height * 0.07,
+                    height: _screenSize.height * 0.02,
+                  ),
+                  _cardTitle(),
+                  SizedBox(
+                    height: _screenSize.height * 0.03,
                   ),
                   _virtueLineAndSpace("abismales", "-1"),
                   _virtueLineAndSpace("", "2"),
@@ -50,6 +60,13 @@ class _VirtueCardState extends State<VirtueCard> {
       mainAxisAlignment: MainAxisAlignment.center,
     );
   }
+
+  Text _cardTitle() => Text(
+        widget.player == 1 ? prefs.playerOne : prefs.playerTwo,
+        style: TextStyle(
+            color: theme.defaultThemeColor(prefs.isDarkTheme),
+            fontWeight: FontWeight.bold),
+      );
 
   DecorationImage _cardImage() {
     return DecorationImage(image: AssetImage(_cardImageUrl));
@@ -78,7 +95,11 @@ class _VirtueCardState extends State<VirtueCard> {
 
   Container _virtueSpace(BoxDecoration decoration, String value) {
     return Container(
-      child: Center(child: Text(value, style: TextStyle(color: Colors.black),)),
+      child: Center(
+          child: Text(
+        value,
+        style: TextStyle(color: Colors.black),
+      )),
       decoration: decoration,
       width: _screenSize.width * 0.247,
       height: _screenSize.height * 0.06,

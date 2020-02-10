@@ -38,9 +38,8 @@ class _SettingsPageState extends State<SettingsPage> {
     _screenSize = MediaQuery.of(context).size;
     return Scaffold(
         appBar: _appBar(),
-        body: Stack(
-          children: <Widget>[_body()],
-        ));
+        body: _body()
+        );
   }
 
   AppBar _appBar() {
@@ -67,7 +66,9 @@ class _SettingsPageState extends State<SettingsPage> {
         Divider(),
         _subTitle("Facción"),
         Divider(),
-        _selectFaction()
+        _selectFaction(),
+        Divider(),
+        _footer()
       ],
     );
   }
@@ -179,17 +180,18 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   _selectFaction() {
-    return Wrap(children: <Widget>[
-      _containerTheme(faction: Factions.ninguno),
-      _containerTheme(faction: Factions.abismales),
-      _containerTheme(faction: Factions.quimera),
-      _containerTheme(faction: Factions.acracia),
-      _containerTheme(faction: Factions.corporacion)
-    ],
-    direction: Axis.horizontal,
-    spacing: _screenSize.width * 0.15,
-    runSpacing: _screenSize.height * 0.05,
-    alignment: WrapAlignment.spaceEvenly);
+    return Wrap(
+        children: <Widget>[
+          _containerTheme(faction: Factions.ninguno),
+          _containerTheme(faction: Factions.abismales),
+          _containerTheme(faction: Factions.quimera),
+          _containerTheme(faction: Factions.acracia),
+          _containerTheme(faction: Factions.corporacion)
+        ],
+        direction: Axis.horizontal,
+        spacing: _screenSize.width * 0.15,
+        runSpacing: _screenSize.height * 0.05,
+        alignment: WrapAlignment.spaceEvenly);
   }
 
   Column _containerTheme({bool isDarkTheme, Factions faction}) {
@@ -216,23 +218,25 @@ class _SettingsPageState extends State<SettingsPage> {
       child: Container(
         height: _screenSize.height * 0.15,
         width: _screenSize.height * 0.15,
-        decoration: faction == null ? _darkThemeBoxDecoration(isDarkTheme) : _factionBoxDecoration(faction),
+        decoration: faction == null
+            ? _darkThemeBoxDecoration(isDarkTheme)
+            : _factionBoxDecoration(faction),
       ),
     );
   }
 
   BoxDecoration _darkThemeBoxDecoration(bool isDarkTheme) {
     return BoxDecoration(
-          color: theme.defaultThemeColor(isDarkTheme),
-          border: Border.all(
-              width: 3.0, color: theme.oppositeThemeColor(isDarkTheme)));
+        color: theme.defaultThemeColor(isDarkTheme),
+        border: Border.all(
+            width: 3.0, color: theme.oppositeThemeColor(isDarkTheme)));
   }
 
-  _factionBoxDecoration(Factions faction) {
+  BoxDecoration _factionBoxDecoration(Factions faction) {
     return BoxDecoration(
-          color: theme.defaultThemeColor(_isDarkTheme),
-          border: Border.all(
-              width: 3.0, color: theme.oppositeThemeColor(_isDarkTheme)));
+        color: theme.defaultThemeColor(_isDarkTheme),
+        border: Border.all(
+            width: 3.0, color: theme.oppositeThemeColor(_isDarkTheme)));
   }
 
   Radio _optionRadio({bool isDarkTheme, Factions faction}) {
@@ -240,7 +244,9 @@ class _SettingsPageState extends State<SettingsPage> {
         value: faction == null ? isDarkTheme : faction,
         groupValue: faction == null ? _isDarkTheme : _faction,
         onChanged: (value) {
-          faction == null ? _setSelectedTheme(value) : _setSelectedFaction(faction);
+          faction == null
+              ? _setSelectedTheme(value)
+              : _setSelectedFaction(faction);
         });
   }
 
@@ -260,23 +266,21 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
-  
-
-  // _selectTheme()
-  // {
-  //   return Wrap(children: <Widget>[
-  //       RadioListTile(
-  //         value: false,
-  //         title: Text("Light"),
-  //         groupValue: _isDarkTheme,
-  //         onChanged: (value){_setSelectedTheme(value);},
-  //       ),
-  //       RadioListTile(
-  //         value: true,
-  //         title: Text("Dark"),
-  //         groupValue: _isDarkTheme,
-  //         onChanged: (value){_setSelectedTheme(value);}),
-  //   ],);
-  // }
-
+  _footer() {
+    return Container(
+      child: Row(children: <Widget>[
+        Text("Developed by: Sergio Orellana Rey - V${utils.version}", style: TextStyle(fontSize: 12.5),),
+        Expanded(child: SizedBox()),
+        Image(
+          image: AssetImage("assets/OrellanaLogo.png"),
+          fit: BoxFit.scaleDown,
+          width: 50,
+          height: 50,
+        ),
+        SizedBox(
+          width: 10,
+        )
+      ])
+    );
+  }
 }
