@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:humankind/src/config/UserConfig.dart';
 import 'package:humankind/src/widgets/VirtueCardWidget.dart';
 
 class HomePage extends StatefulWidget {
@@ -7,21 +8,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final prefs = new UserConfig();
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Humankind"),
-      ),
       body: Stack(children: <Widget>[
-        _backgroundImage(),
         VirtueCard()
       ],),
+      floatingActionButton: FloatingActionButton(child: Icon(Icons.settings), onPressed: (){Navigator.pushNamed(context, "settings");},),
     );
-  }
-
-  _backgroundImage()
-  {
-    return Container(color: Colors.white,);
   }
 }

@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:humankind/src/config/UserConfig.dart';
 
 class VirtueCard extends StatefulWidget {
   @override
   _VirtueCardState createState() => _VirtueCardState();
 }
+//TODO: Agregar borde a la fila.
+//TODO: Agregar otras funcionalidades
 
 class _VirtueCardState extends State<VirtueCard> {
   Size _screenSize;
-  final String _cardImageUrl = 'assets/card1.png';
+  final prefs = new UserConfig();
+  String _cardImageUrl;
 
   @override
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.of(context).size;
-
+    _cardImageUrl = prefs.isDarkTheme ? 'assets/card2.png' : 'assets/card1.png';
     return Center(child: _virtueTable());
   }
 
@@ -74,7 +78,7 @@ class _VirtueCardState extends State<VirtueCard> {
 
   Container _virtueSpace(BoxDecoration decoration, String value) {
     return Container(
-      child: Center(child: Text(value)),
+      child: Center(child: Text(value, style: TextStyle(color: Colors.black),)),
       decoration: decoration,
       width: _screenSize.width * 0.247,
       height: _screenSize.height * 0.06,
