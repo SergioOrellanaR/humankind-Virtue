@@ -4,8 +4,6 @@ export 'package:humankind/src/enums/FactionsEnum.dart';
 
 class Faction extends AbstractVirtue{
   Factions faction;
-  //TODO: Agregar source de imagen.
-  String imageSource;
 
   Faction({this.faction}):super()
   {

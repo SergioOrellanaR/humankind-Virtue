@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:humankind/src/config/UserConfig.dart';
 import 'package:humankind/src/controllers/VirtuesController.dart';
+import 'package:humankind/src/models/AbstractVirtue.dart';
+import 'package:humankind/src/models/FactionModel.dart';
 import 'package:humankind/src/models/PlayerInformation.dart';
-import 'package:humankind/utils/themeValues.dart' as theme;
 import 'package:humankind/utils/utils.dart' as utils;
 
 class VirtueCard extends StatefulWidget {
@@ -42,9 +43,17 @@ class _VirtueCardState extends State<VirtueCard> {
   Row _mainScreen() {
     return Row(
       children: <Widget>[
-        _playerValue == 1 ? Container(width: _screenSize.width*0.13,) : _changePageArrow(),
+        _playerValue == 1
+            ? Container(
+                width: _screenSize.width * 0.13,
+              )
+            : _changePageArrow(),
         _virtueTable(),
-        _playerValue == 1 ? _changePageArrow() : Container(width: _screenSize.width*0.13,),
+        _playerValue == 1
+            ? _changePageArrow()
+            : Container(
+                width: _screenSize.width * 0.13,
+              ),
       ],
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
     );
@@ -52,38 +61,13 @@ class _VirtueCardState extends State<VirtueCard> {
 
   _virtueTable() {
     return GestureDetector(
-      onHorizontalDragUpdate: (_){},
-          child: Row(
+      onHorizontalDragUpdate: (_) {},
+      child: Row(
         children: <Widget>[
           Wrap(
             children: <Widget>[
               Container(
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: _screenSize.height * 0.02,
-                    ),
-                    _cardTitle(),
-                    SizedBox(
-                      height: _screenSize.height * 0.03,
-                    ),
-                    _stackedVirtueAndSpace(_virtuesController.factions[0].toString(),
-                        _virtuesController.virtuesValues[0].value),
-                    _stackedVirtueAndSpace(_virtuesController.factions[1].toString(),
-                        _virtuesController.virtuesValues[1].value),
-                    _stackedVirtueAndSpace(_virtuesController.factions[2].toString(),
-                        _virtuesController.virtuesValues[2].value),
-                    _stackedVirtueAndSpace(_virtuesController.factions[3].toString(),
-                        _virtuesController.virtuesValues[3].value),
-                    _stackedVirtueAndSpace(_virtuesController.factions[4].toString(),
-                        _virtuesController.virtuesValues[4].value),
-                    _reRoll(),
-                    SizedBox(
-                      height: _screenSize.height * 0.02,
-                    ),
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.center,
-                ),
+                child: _tableInformation(),
                 decoration: BoxDecoration(image: _cardImage()),
               )
             ],
@@ -94,11 +78,40 @@ class _VirtueCardState extends State<VirtueCard> {
     );
   }
 
+  Column _tableInformation() {
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          height: _screenSize.height * 0.02,
+        ),
+        _cardTitle(),
+        SizedBox(
+          height: _screenSize.height * 0.03,
+        ),
+        _stackedVirtueAndSpace(_virtuesController.factions[0],
+            _virtuesController.virtuesValues[0]),
+        _stackedVirtueAndSpace(_virtuesController.factions[1],
+            _virtuesController.virtuesValues[1]),
+        _stackedVirtueAndSpace(_virtuesController.factions[2],
+            _virtuesController.virtuesValues[2]),
+        _stackedVirtueAndSpace(_virtuesController.factions[3],
+            _virtuesController.virtuesValues[3]),
+        _stackedVirtueAndSpace(_virtuesController.factions[4],
+            _virtuesController.virtuesValues[4]),
+        _reRoll(),
+        SizedBox(
+          height: _screenSize.height * 0.02,
+        ),
+      ],
+      mainAxisAlignment: MainAxisAlignment.center,
+    );
+  }
+
   Text _cardTitle() {
     return Text(
       widget.player.playerNumber == 1 ? prefs.playerOne : prefs.playerTwo,
       style: TextStyle(
-          color: theme.defaultThemeColor(prefs.isDarkTheme),
+          color: utils.defaultThemeColor(prefs.isDarkTheme),
           fontWeight: FontWeight.bold),
     );
   }
@@ -107,95 +120,128 @@ class _VirtueCardState extends State<VirtueCard> {
     return DecorationImage(image: AssetImage(_cardImageUrl));
   }
 
-  Stack _stackedVirtues(String factionValue, String virtueValue)
-  {
-    return Stack(children: <Widget>[
-      _virtueLine(factionValue, virtueValue),
-      _concealingWidget()
-    ],);
-  }
-
-  Column _stackedVirtueAndSpace(String factionValue, String virtueValue) {
+  Column _stackedVirtueAndSpace(Faction faction, Virtue virtue) {
     return Column(
       children: <Widget>[
-        _stackedVirtues(factionValue, virtueValue),
+        _stackedVirtues(faction, virtue),
         SizedBox(height: _screenSize.height * 0.02)
       ],
     );
   }
 
-  Row _virtueLine(String factionValue, String virtueValue) {
+  Stack _stackedVirtues(Faction faction, Virtue virtue) {
+    return Stack(
+      children: <Widget>[
+        _virtueLine(faction, virtue),
+        _concealingWidget(faction, virtue)
+      ],
+    );
+  }
+
+  Row _virtueLine(Faction faction, Virtue virtue) {
     return Row(children: <Widget>[
       SizedBox(width: _screenSize.width * 0.08),
-      _virtueSpace(_leftContainerDecoration(), factionValue),
+      _virtueSpace(_leftContainerDecoration(), faction.toString()),
       SizedBox(
         width: 0.3,
       ),
-      _virtueSpace(_rightContainerDecoration(), virtueValue),
+      _virtueSpace(_rightContainerDecoration(), virtue.value),
       SizedBox(width: _screenSize.width * 0.08),
     ], mainAxisAlignment: MainAxisAlignment.center);
   }
 
-  Row _concealingWidget() {
+  Row _concealingWidget(Faction faction, Virtue virtue) {
+    Container hiddenContainer = Container(
+        width: _screenSize.width * 0.247, height: _screenSize.height * 0.06);
+    Widget factionValue = hiddenContainer;
+    Widget virtueValue = hiddenContainer;
+
+    if (!faction.isVisible) {
+      factionValue = _virtueSpace(
+          _leftContainerDecoration(imageUrl: utils.leftTab), "",
+          virtue: faction);
+    }
+
+    if (!virtue.isVisible) {
+      virtueValue = _virtueSpace(
+          _rightContainerDecoration(imageUrl: utils.rightTab), "",
+          virtue: virtue);
+    }
+
     return Row(children: <Widget>[
       SizedBox(width: _screenSize.width * 0.08),
-      _virtueSpace(_leftContainerDecoration(), ""),
+      factionValue,
       SizedBox(
         width: 0.3,
       ),
-      _virtueSpace(_rightContainerDecoration(), ""),
+      virtueValue,
       SizedBox(width: _screenSize.width * 0.08),
     ], mainAxisAlignment: MainAxisAlignment.center);
   }
 
-  Container _virtueSpace(BoxDecoration decoration, String value) {
-    return Container(
-      child: Center(
-          child: Text(
-        value,
-        style: TextStyle(color: Colors.black),
-      )),
-      decoration: decoration,
-      width: _screenSize.width * 0.247,
-      height: _screenSize.height * 0.06,
+  GestureDetector _virtueSpace(BoxDecoration decoration, String value,
+      {AbstractVirtue virtue}) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          if (virtue != null) {
+            virtue.isVisible = true;
+          }
+        });
+      },
+      child: Container(
+          child: Center(
+              child: Text(
+            value,
+            style: TextStyle(color: Colors.black),
+          )),
+          decoration: decoration,
+          width: _screenSize.width * 0.247,
+          height: _screenSize.height * 0.06),
     );
   }
 
-  BoxDecoration _leftContainerDecoration() {
-    
-    DecorationImage image = DecorationImage(image: AssetImage(utils.leftTab), fit: BoxFit.fill);
+  BoxDecoration _leftContainerDecoration({String imageUrl}) {
+    DecorationImage image;
+
+    if (imageUrl != null) {
+      image = DecorationImage(image: AssetImage(imageUrl), fit: BoxFit.fill);
+    }
+
     return BoxDecoration(
-      //color: Color.fromRGBO(182, 158, 130, 1.0),
-      color: Colors.white,
-      borderRadius: BorderRadius.only(
-        topRight: Radius.circular(0.0),
-        topLeft: Radius.circular(13.0),
-        bottomRight: Radius.circular(0.0),
-        bottomLeft: Radius.circular(13.0),
-      ),
-      image: image
-    );
+        //color: Color.fromRGBO(182, 158, 130, 1.0),
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(0.0),
+          topLeft: Radius.circular(13.0),
+          bottomRight: Radius.circular(0.0),
+          bottomLeft: Radius.circular(13.0),
+        ),
+        image: image);
   }
 
-  BoxDecoration _rightContainerDecoration() {
-    DecorationImage image = DecorationImage(image: AssetImage(utils.rightTab), fit: BoxFit.fill);
+  BoxDecoration _rightContainerDecoration({String imageUrl}) {
+    DecorationImage image;
+
+    if (imageUrl != null) {
+      image = DecorationImage(image: AssetImage(imageUrl), fit: BoxFit.fill);
+    }
 
     return BoxDecoration(
-      //color: Color.fromRGBO(182, 158, 130, 1.0),
-      color: Colors.white,
-      borderRadius: BorderRadius.only(
-          topRight: Radius.circular(13.0),
-          topLeft: Radius.circular(0.0),
-          bottomRight: Radius.circular(13.0),
-          bottomLeft: Radius.circular(0.0)),
-      image: image
-    );
+        //color: Color.fromRGBO(182, 158, 130, 1.0),
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+            topRight: Radius.circular(13.0),
+            topLeft: Radius.circular(0.0),
+            bottomRight: Radius.circular(13.0),
+            bottomLeft: Radius.circular(0.0)),
+        image: image);
   }
 
   _reRoll() {
     return FloatingActionButton(
       child: Icon(Icons.refresh),
-      backgroundColor: theme.oppositeThemeColor(prefs.isDarkTheme),
+      backgroundColor: utils.oppositeThemeColor(prefs.isDarkTheme),
       mini: true,
       heroTag: "card$_playerValue",
       onPressed: () {

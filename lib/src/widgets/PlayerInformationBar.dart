@@ -132,11 +132,19 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
   }
 
   Text _valueToCounter({@required bool isWill}) {
-    TextStyle style =
-        TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
+    
     String value = isWill
         ? "${_willPoints.toString()}/$_savedWill"
         : _structurePoints.toString();
+
+    TextStyle style =
+        TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
+
+    if(isWill && value.length == 5)
+    {
+      style = TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12.0);
+    }
+    
     return Text(value, style: style);
   }
 

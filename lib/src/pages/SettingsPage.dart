@@ -2,7 +2,6 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:humankind/src/config/UserConfig.dart';
-import 'package:humankind/utils/themeValues.dart' as theme;
 import 'package:humankind/utils/utils.dart' as utils;
 
 class SettingsPage extends StatefulWidget {
@@ -91,7 +90,7 @@ class _SettingsPageState extends State<SettingsPage> {
       playerString = _playerTwo;
     }
 
-    Color defaultColor = theme.oppositeThemeColor(_isDarkTheme);
+    Color defaultColor = utils.oppositeThemeColor(_isDarkTheme);
     TextStyle defaultStyle = TextStyle(color: defaultColor);
 
     return Container(
@@ -128,7 +127,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Container _willOrStructureValue({@required bool isWill}) {
     String value = isWill ? "Voluntad" : "Estructura";
-    Color defaultColor = theme.oppositeThemeColor(_isDarkTheme);
+    Color defaultColor = utils.oppositeThemeColor(_isDarkTheme);
     TextStyle defaultStyle = TextStyle(color: defaultColor);
     String defaultValue =
         (isWill ? _defaultWill : _defaultStructure).toString();
@@ -227,16 +226,16 @@ class _SettingsPageState extends State<SettingsPage> {
 
   BoxDecoration _darkThemeBoxDecoration(bool isDarkTheme) {
     return BoxDecoration(
-        color: theme.defaultThemeColor(isDarkTheme),
+        color: utils.defaultThemeColor(isDarkTheme),
         border: Border.all(
-            width: 3.0, color: theme.oppositeThemeColor(isDarkTheme)));
+            width: 3.0, color: utils.oppositeThemeColor(isDarkTheme)));
   }
 
   BoxDecoration _factionBoxDecoration(Factions faction) {
     return BoxDecoration(
-        color: theme.defaultThemeColor(_isDarkTheme),
+        color: utils.defaultThemeColor(_isDarkTheme),
         border: Border.all(
-            width: 3.0, color: theme.oppositeThemeColor(_isDarkTheme)));
+            width: 3.0, color: utils.oppositeThemeColor(_isDarkTheme)));
   }
 
   Radio _optionRadio({bool isDarkTheme, Factions faction}) {

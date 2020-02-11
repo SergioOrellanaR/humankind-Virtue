@@ -4,7 +4,7 @@ import 'package:humankind/src/config/UserConfig.dart';
 import 'package:humankind/src/models/PlayerInformation.dart';
 import 'package:humankind/src/widgets/PlayerInformationBar.dart';
 import 'package:humankind/src/widgets/VirtueCardWidget.dart';
-import 'package:humankind/utils/themeValues.dart' as theme;
+import 'package:humankind/utils/utils.dart' as utils;
 
 class HomePage extends StatefulWidget {
   @override
@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
         SizedBox(width: _screenSize.width * 0.08,),
         FloatingActionButton(
           child: Icon(Icons.settings),
-          backgroundColor: theme.oppositeThemeColor(prefs.isDarkTheme),
+          backgroundColor: utils.oppositeThemeColor(prefs.isDarkTheme),
           onPressed: () {
             Navigator.pushNamed(context, "settings");
           },

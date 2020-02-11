@@ -34,11 +34,8 @@ class VirtuesController {
   }
 
   reshuffle() {
-    if (factions == null || virtuesValues == null) {
-      _initializeFactions();
-      _initializeVirtuesValues();
-    }
-
+    _initializeFactions();
+    _initializeVirtuesValues();
     _shuffle();
   }
 }
