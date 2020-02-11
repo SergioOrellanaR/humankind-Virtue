@@ -156,7 +156,7 @@ class _VirtueCardState extends State<VirtueCard>
   }
 
   DecorationImage _cardImage() {
-    return DecorationImage(image: AssetImage(_cardImageUrl));
+    return DecorationImage(image: AssetImage(_cardImageUrl), fit: BoxFit.fill);
   }
 
   Column _stackedVirtueAndSpace(Faction faction, Virtue virtue) {
@@ -354,17 +354,21 @@ class _VirtueCardState extends State<VirtueCard>
   }
 
   _reRoll() {
-    return FloatingActionButton(
-      child: Icon(Icons.refresh, color: utils.oppositeThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),),
-      backgroundColor: utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
-      mini: true,
-      heroTag: "card$_playerValue",
-      onPressed: () {
-        setState(() {
-          widget.player.virtuesController.reshuffle();
-          _virtuesController = widget.player.virtuesController;
-        });
-      },
+    return SizedBox(
+      width: _screenSize.height * 0.05,
+      height: _screenSize.height * 0.05,
+          child: FloatingActionButton(
+        child: Icon(Icons.refresh, size: 20.0, color: utils.oppositeThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),),
+        backgroundColor: utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
+        heroTag: "card$_playerValue",
+        elevation: 3.0,
+        onPressed: () {
+          setState(() {
+            widget.player.virtuesController.reshuffle();
+            _virtuesController = widget.player.virtuesController;
+          });
+        },
+      ),
     );
   }
 
