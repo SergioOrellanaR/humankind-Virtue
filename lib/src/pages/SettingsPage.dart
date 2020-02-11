@@ -17,6 +17,7 @@ class _SettingsPageState extends State<SettingsPage> {
   int _animationSpeed;
   bool _isDarkTheme;
   Factions _faction;
+  bool _isSelected = false;
 
   TextEditingController _textEditingController;
   Size _screenSize;
@@ -37,14 +38,22 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.of(context).size;
-    return Scaffold(appBar: _appBar(), body: _body());
+    return Scaffold(appBar: _appBar(), body: _body(context));
   }
 
   AppBar _appBar() {
-    return AppBar(title: Text("Ajustes"));
+    if (prefs.faction != Factions.ninguno.index) {
+      return AppBar(
+        title: Text("Ajustes"),
+        backgroundColor: utils.mainThemeColor(
+            prefs.isDarkTheme, Factions.values[prefs.faction]),
+      );
+    } else {
+      return AppBar(title: Text("Ajustes"));
+    }
   }
 
-  ListView _body() {
+  ListView _body(BuildContext context) {
     return ListView(
       children: <Widget>[
         _subTitle("Jugadores"),
@@ -53,14 +62,14 @@ class _SettingsPageState extends State<SettingsPage> {
         _subTitle("Valores"),
         _willOrStructureValue(isWill: false),
         _willOrStructureValue(isWill: true),
-        _subTitle("Animación"),
+        _subTitle("Velocidad de Animación"),
         _selectAnimationSpeed(),
         _subTitle("Tema"),
         _selectTheme(),
         _subTitle("Facción"),
         _selectFaction(),
-        // Divider(),
-        // _saveButton(),
+        Divider(),
+        _saveButton(context),
         _footer()
       ],
     );
@@ -228,7 +237,8 @@ class _SettingsPageState extends State<SettingsPage> {
     return BoxDecoration(
         color: utils.darkAndLightThemeColor(isDarkTheme),
         border: Border.all(
-            width: 3.0, color: utils.darkAndLightOppositeThemeColor(isDarkTheme)));
+            width: 3.0,
+            color: utils.darkAndLightOppositeThemeColor(isDarkTheme)));
   }
 
   BoxDecoration _factionBoxDecoration(Factions faction) {
@@ -238,7 +248,8 @@ class _SettingsPageState extends State<SettingsPage> {
           image: DecorationImage(
               image: utils.factionImage(faction), fit: BoxFit.contain),
           border: Border.all(
-              width: 3.0, color: utils.darkAndLightOppositeThemeColor(_isDarkTheme)));
+              width: 3.0,
+              color: utils.darkAndLightOppositeThemeColor(_isDarkTheme)));
     } else {
       return _darkThemeBoxDecoration(_isDarkTheme);
     }
@@ -322,9 +333,11 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _saveButton() {
+  Widget _saveButton(BuildContext context) {
     return Center(
       child: RaisedButton(
+          color: utils.mainThemeColor(
+              prefs.isDarkTheme, Factions.values[prefs.faction]),
           child: Padding(
             //EdgeInsets.symetric para distintos valores UwU
             padding: EdgeInsets.all(12.0),
@@ -334,7 +347,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           onPressed: () {
-            Navigator.pushReplacementNamed(context, "home");
+            Navigator.pop(context);
           },
           shape: StadiumBorder()),
     );

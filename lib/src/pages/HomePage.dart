@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
     _screenSize = MediaQuery.of(context).size;
     _lockOrientationToPortrait();
     return SafeArea(
-      child: Scaffold(
+          child: Scaffold(
         body: Stack(
           children: <Widget>[_background(), _body()],
         ),
@@ -65,12 +65,9 @@ class _HomePageState extends State<HomePage> {
   _body() {
     return Column(
       children: <Widget>[
-        _playerInformationBar(playerInformation: playerTwo),
+        Expanded(child: _playerInformationBar(playerInformation: playerTwo)),
         _virtueCard(),
-        Expanded(
-          child: SizedBox(),
-        ),
-        _playerInformationBar(playerInformation: playerOne)
+        Expanded(child: _playerInformationBar(playerInformation: playerOne))
       ],
     );
   }
