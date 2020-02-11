@@ -355,8 +355,8 @@ class _VirtueCardState extends State<VirtueCard>
 
   _reRoll() {
     return FloatingActionButton(
-      child: Icon(Icons.refresh),
-      backgroundColor: utils.oppositeThemeColor(prefs.isDarkTheme),
+      child: Icon(Icons.refresh, color: utils.oppositeThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),),
+      backgroundColor: utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
       mini: true,
       heroTag: "card$_playerValue",
       onPressed: () {
@@ -373,7 +373,7 @@ class _VirtueCardState extends State<VirtueCard>
         ? Icons.keyboard_arrow_right
         : Icons.keyboard_arrow_left;
     return GestureDetector(
-      child: Icon(iconData, size: _screenSize.width * 0.13),
+      child: Icon(iconData, size: _screenSize.width * 0.13, color: utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),),
       onTap: () {
         if (_playerValue == 1) {
           widget.pageViewController.nextPage(

@@ -34,20 +34,20 @@ class _HomePageState extends State<HomePage> {
         body: Stack(
           children: <Widget>[_backgroundImage(), _body()],
         ),
-        floatingActionButton: _settings(context),
+        floatingActionButton: _actionButtons(context),
       ),
     );
   }
 
-  Row _settings(BuildContext context) {
+  Row _actionButtons(BuildContext context) {
     return Row(
       children: <Widget>[
         SizedBox(
           width: _screenSize.width * 0.08,
         ),
         FloatingActionButton(
-          child: Icon(Icons.settings),
-          backgroundColor: utils.oppositeThemeColor(prefs.isDarkTheme),
+          child: Icon(Icons.settings, color: utils.oppositeThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),),
+          backgroundColor: utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
           onPressed: () {
             Navigator.pushNamed(context, "settings");
           },
@@ -83,21 +83,18 @@ class _HomePageState extends State<HomePage> {
   }
 
   _backgroundImage() {
-    if(prefs.faction != Factions.ninguno)
-    {
+    if (prefs.faction != Factions.ninguno.index) {
       return Center(
         child: Container(
-        height: _screenSize.height * 0.8,
-        width: _screenSize.width * 0.8,
-        decoration: BoxDecoration(
-          image: DecorationImage(image: utils.factionImage(Factions.values[prefs.faction]),
-          fit: BoxFit.fill)
+          height: _screenSize.height * 0.2,
+          width: _screenSize.width * 0.3,
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: utils.factionImage(Factions.values[prefs.faction]),
+                  fit: BoxFit.fill)),
         ),
-    ),
       );
-    }
-    else
-    {
+    } else {
       return Container();
     }
   }
@@ -129,7 +126,10 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.all(12.0),
           child: Text(
             "Reiniciar juego",
-            style: TextStyle(fontSize: 18.0, color: utils.defaultThemeColor(prefs.isDarkTheme), fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontSize: 18.0,
+                color: utils.oppositeThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
+                fontWeight: FontWeight.bold),
           ),
         ),
         onPressed: () {
@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         },
-        color: utils.oppositeThemeColor(prefs.isDarkTheme),
+        color: utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
         shape: StadiumBorder());
   }
 }

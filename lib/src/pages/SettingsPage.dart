@@ -90,7 +90,7 @@ class _SettingsPageState extends State<SettingsPage> {
       playerString = _playerTwo;
     }
 
-    Color defaultColor = utils.oppositeThemeColor(_isDarkTheme);
+    Color defaultColor = utils.darkAndLightOppositeThemeColor(_isDarkTheme);
     TextStyle defaultStyle = TextStyle(color: defaultColor);
 
     return Container(
@@ -127,7 +127,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Container _willOrStructureValue({@required bool isWill}) {
     String value = isWill ? "Voluntad" : "Estructura";
-    Color defaultColor = utils.oppositeThemeColor(_isDarkTheme);
+    Color defaultColor = utils.darkAndLightOppositeThemeColor(_isDarkTheme);
     TextStyle defaultStyle = TextStyle(color: defaultColor);
     String defaultValue =
         (isWill ? _defaultWill : _defaultStructure).toString();
@@ -226,19 +226,19 @@ class _SettingsPageState extends State<SettingsPage> {
 
   BoxDecoration _darkThemeBoxDecoration(bool isDarkTheme) {
     return BoxDecoration(
-        color: utils.defaultThemeColor(isDarkTheme),
+        color: utils.darkAndLightThemeColor(isDarkTheme),
         border: Border.all(
-            width: 3.0, color: utils.oppositeThemeColor(isDarkTheme)));
+            width: 3.0, color: utils.darkAndLightOppositeThemeColor(isDarkTheme)));
   }
 
   BoxDecoration _factionBoxDecoration(Factions faction) {
     if (faction != Factions.ninguno) {
       return BoxDecoration(
-          color: utils.defaultThemeColor(_isDarkTheme),
+          color: utils.darkAndLightThemeColor(_isDarkTheme),
           image: DecorationImage(
               image: utils.factionImage(faction), fit: BoxFit.contain),
           border: Border.all(
-              width: 3.0, color: utils.oppositeThemeColor(_isDarkTheme)));
+              width: 3.0, color: utils.darkAndLightOppositeThemeColor(_isDarkTheme)));
     } else {
       return _darkThemeBoxDecoration(_isDarkTheme);
     }
@@ -339,6 +339,4 @@ class _SettingsPageState extends State<SettingsPage> {
           shape: StadiumBorder()),
     );
   }
-  //   _animationSpeed = value.toInt();
-  // prefs.animationSpeed = value.toInt();
 }

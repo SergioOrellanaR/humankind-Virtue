@@ -15,14 +15,14 @@ stringfiedFaction(Factions factEnum)
     return StringUtils.capitalize(stringedValue.split('.')[factionNameIndex]);
   }
 
-Color defaultThemeColor(bool isDarkTheme)
+Color darkAndLightThemeColor(bool isDarkTheme)
 {
   return (isDarkTheme) ? Color.fromRGBO(100, 100, 100, 1.0) : Colors.white;
 }
 
-Color oppositeThemeColor(bool isDarkTheme)
+Color darkAndLightOppositeThemeColor(bool isDarkTheme)
 {
-  return (isDarkTheme) ? Colors.white : Color.fromRGBO(100, 100, 100, 1.0);
+  return (isDarkTheme) ? Colors.white : Color.fromRGBO(50, 50, 50, 1.0);
 }
 
 Color factionColor(Factions faction)
@@ -40,10 +40,34 @@ Color factionColor(Factions faction)
       color = Colors.blue;
       break;
     case Factions.acracia:
-      color = Colors.yellow;
+      color = Color.fromRGBO(180, 180, 60, 1.0);
       break;
     case Factions.corporacion:
       color = Colors.red;
+      break;
+  }
+  return color;
+}
+
+Color oppositefactionColor(Factions faction)
+{
+  Color color;
+  switch(faction)
+  {
+    case Factions.ninguno:
+      color = Colors.transparent;
+      break;
+    case Factions.abismales:
+      color = Colors.red;
+      break;
+    case Factions.quimera:
+      color = Colors.orange;
+      break;
+    case Factions.acracia:
+      color = Colors.deepPurple;
+      break;
+    case Factions.corporacion:
+      color = Colors.green;
       break;
   }
   return color;
@@ -97,4 +121,29 @@ String speedValue(int value)
   }
 
   return text;
+}
+
+Color mainThemeColor(bool isDarkTheme, Factions faction)
+{
+  if(faction == Factions.ninguno)
+  {
+    return darkAndLightThemeColor(isDarkTheme);
+  }
+  else
+  {
+    return factionColor(faction);
+  }
+}
+
+Color oppositeThemeColor(bool isDarkTheme, Factions faction)
+{
+  if(faction == Factions.ninguno)
+  {
+    return darkAndLightOppositeThemeColor(isDarkTheme);
+  }
+  else
+  {
+    return darkAndLightOppositeThemeColor(isDarkTheme);
+    //return factionColor(faction);
+  }
 }
