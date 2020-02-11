@@ -22,7 +22,7 @@ Color darkAndLightThemeColor(bool isDarkTheme)
 
 Color darkAndLightOppositeThemeColor(bool isDarkTheme)
 {
-  return (isDarkTheme) ? Colors.white : Color.fromRGBO(50, 50, 50, 1.0);
+  return (isDarkTheme) ? Colors.white : Color.fromRGBO(30, 30, 30, 1.0);
 }
 
 Color factionColor(Factions faction)
@@ -137,13 +137,14 @@ Color mainThemeColor(bool isDarkTheme, Factions faction)
 
 Color oppositeThemeColor(bool isDarkTheme, Factions faction)
 {
-  if(faction == Factions.ninguno)
-  {
-    return darkAndLightOppositeThemeColor(isDarkTheme);
-  }
-  else
-  {
-    return darkAndLightOppositeThemeColor(isDarkTheme);
-    //return factionColor(faction);
-  }
+  ////ESTE MÉTODO ESTÁ COMENTADO PARA FUNCIONALIDADES ACTUALES, PERO PODRÍA SER UTIL EN EL FUTURO.
+  // if(faction == Factions.ninguno)
+  // {
+  //   return darkAndLightOppositeThemeColor(isDarkTheme);
+  // }
+  // else
+  // {
+  //   return oppositefactionColor(faction);
+  // }
+  return darkAndLightOppositeThemeColor(isDarkTheme);
 }

@@ -32,9 +32,9 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: Scaffold(
         body: Stack(
-          children: <Widget>[_backgroundImage(), _body()],
+          children: <Widget>[_background(), _body()],
         ),
-        floatingActionButton: _actionButtons(context),
+        floatingActionButton: _actionButtons(context)
       ),
     );
   }
@@ -82,18 +82,12 @@ class _HomePageState extends State<HomePage> {
     ]);
   }
 
-  _backgroundImage() {
+  _background() {
     if (prefs.faction != Factions.ninguno.index) {
-      return Center(
-        child: Container(
-          height: _screenSize.height * 0.2,
-          width: _screenSize.width * 0.3,
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: utils.factionImage(Factions.values[prefs.faction]),
-                  fit: BoxFit.fill)),
-        ),
-      );
+      return Stack(children: <Widget>[
+        _centerBackgroundImage(),
+        _factionCornerImage()
+      ],);
     } else {
       return Container();
     }
@@ -146,5 +140,35 @@ class _HomePageState extends State<HomePage> {
         },
         color: utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
         shape: StadiumBorder());
+  }
+
+  Center _centerBackgroundImage() {
+    return Center(
+      child: Container(
+        height: _screenSize.height * 0.2,
+        width: _screenSize.height * 0.2,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: utils.factionImage(Factions.values[prefs.faction]),
+                fit: BoxFit.fill)),
+      ),
+    );
+  }
+
+  _factionCornerImage() 
+  {
+    return Positioned(
+      top: 4.0,
+      right: 4.0,
+          child: Container(
+        width: _screenSize.height * 0.1,
+        height: _screenSize.height * 0.1,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+                  image: utils.factionImage(Factions.values[prefs.faction]),
+                  fit: BoxFit.fill)
+        ),
+      ),
+    );
   }
 }
