@@ -4,6 +4,8 @@ import 'package:humankind/src/enums/FactionsEnum.dart';
 
 final String appName = 'Humankind Virtue';
 final String version = '1.0.0';
+final String leftTab = 'assets/tabs/leftTab.png';
+final String rightTab ='assets/tabs/rightTab.png';
 
 stringfiedFaction(Factions factEnum)
   {

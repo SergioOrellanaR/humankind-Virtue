@@ -67,15 +67,15 @@ class _VirtueCardState extends State<VirtueCard> {
                     SizedBox(
                       height: _screenSize.height * 0.03,
                     ),
-                    _virtueLineAndSpace(_virtuesController.factions[0].toString(),
+                    _stackedVirtueAndSpace(_virtuesController.factions[0].toString(),
                         _virtuesController.virtuesValues[0].value),
-                    _virtueLineAndSpace(_virtuesController.factions[1].toString(),
+                    _stackedVirtueAndSpace(_virtuesController.factions[1].toString(),
                         _virtuesController.virtuesValues[1].value),
-                    _virtueLineAndSpace(_virtuesController.factions[2].toString(),
+                    _stackedVirtueAndSpace(_virtuesController.factions[2].toString(),
                         _virtuesController.virtuesValues[2].value),
-                    _virtueLineAndSpace(_virtuesController.factions[3].toString(),
+                    _stackedVirtueAndSpace(_virtuesController.factions[3].toString(),
                         _virtuesController.virtuesValues[3].value),
-                    _virtueLineAndSpace(_virtuesController.factions[4].toString(),
+                    _stackedVirtueAndSpace(_virtuesController.factions[4].toString(),
                         _virtuesController.virtuesValues[4].value),
                     _reRoll(),
                     SizedBox(
@@ -107,10 +107,18 @@ class _VirtueCardState extends State<VirtueCard> {
     return DecorationImage(image: AssetImage(_cardImageUrl));
   }
 
-  Column _virtueLineAndSpace(String factionValue, String virtueValue) {
+  Stack _stackedVirtues(String factionValue, String virtueValue)
+  {
+    return Stack(children: <Widget>[
+      _virtueLine(factionValue, virtueValue),
+      _concealingWidget()
+    ],);
+  }
+
+  Column _stackedVirtueAndSpace(String factionValue, String virtueValue) {
     return Column(
       children: <Widget>[
-        _virtueLine(factionValue, virtueValue),
+        _stackedVirtues(factionValue, virtueValue),
         SizedBox(height: _screenSize.height * 0.02)
       ],
     );
@@ -124,6 +132,18 @@ class _VirtueCardState extends State<VirtueCard> {
         width: 0.3,
       ),
       _virtueSpace(_rightContainerDecoration(), virtueValue),
+      SizedBox(width: _screenSize.width * 0.08),
+    ], mainAxisAlignment: MainAxisAlignment.center);
+  }
+
+  Row _concealingWidget() {
+    return Row(children: <Widget>[
+      SizedBox(width: _screenSize.width * 0.08),
+      _virtueSpace(_leftContainerDecoration(), ""),
+      SizedBox(
+        width: 0.3,
+      ),
+      _virtueSpace(_rightContainerDecoration(), ""),
       SizedBox(width: _screenSize.width * 0.08),
     ], mainAxisAlignment: MainAxisAlignment.center);
   }
@@ -142,6 +162,8 @@ class _VirtueCardState extends State<VirtueCard> {
   }
 
   BoxDecoration _leftContainerDecoration() {
+    
+    DecorationImage image = DecorationImage(image: AssetImage(utils.leftTab), fit: BoxFit.fill);
     return BoxDecoration(
       //color: Color.fromRGBO(182, 158, 130, 1.0),
       color: Colors.white,
@@ -151,10 +173,13 @@ class _VirtueCardState extends State<VirtueCard> {
         bottomRight: Radius.circular(0.0),
         bottomLeft: Radius.circular(13.0),
       ),
+      image: image
     );
   }
 
   BoxDecoration _rightContainerDecoration() {
+    DecorationImage image = DecorationImage(image: AssetImage(utils.rightTab), fit: BoxFit.fill);
+
     return BoxDecoration(
       //color: Color.fromRGBO(182, 158, 130, 1.0),
       color: Colors.white,
@@ -163,6 +188,7 @@ class _VirtueCardState extends State<VirtueCard> {
           topLeft: Radius.circular(0.0),
           bottomRight: Radius.circular(13.0),
           bottomLeft: Radius.circular(0.0)),
+      image: image
     );
   }
 
