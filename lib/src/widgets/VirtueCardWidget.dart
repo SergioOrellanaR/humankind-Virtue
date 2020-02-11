@@ -18,18 +18,39 @@ class VirtueCard extends StatefulWidget {
 //TODO: Agregar borde a la fila.
 //TODO: Agregar otras funcionalidades
 
-class _VirtueCardState extends State<VirtueCard> {
+class _VirtueCardState extends State<VirtueCard>
+    with SingleTickerProviderStateMixin {
   Size _screenSize;
   String _cardImageUrl;
   VirtuesController _virtuesController;
   int _playerValue;
   final prefs = new UserConfig();
+  AnimationController _controller;
+  Animation<Offset> _offsetAnimation;
+  bool _transition = false;
 
   @override
   void initState() {
     super.initState();
     _virtuesController = widget.player.virtuesController;
     _playerValue = widget.player.playerNumber;
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    );
+    _offsetAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(1.5, 0.0),
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInExpo,
+    ));
+  }
+
+  @override
+  void dispose() { 
+    _controller?.dispose();
+    super.dispose();
   }
 
   @override
@@ -153,19 +174,49 @@ class _VirtueCardState extends State<VirtueCard> {
   Row _concealingWidget(Faction faction, Virtue virtue) {
     Container hiddenContainer = Container(
         width: _screenSize.width * 0.247, height: _screenSize.height * 0.06);
-    Widget factionValue = hiddenContainer;
-    Widget virtueValue = hiddenContainer;
 
-    if (!faction.isVisible) {
-      factionValue = _virtueSpace(
+    Widget factionValue = _virtueSpace(
           _leftContainerDecoration(imageUrl: utils.leftTab), "",
           virtue: faction);
-    }
-
-    if (!virtue.isVisible) {
-      virtueValue = _virtueSpace(
+    Widget virtueValue = _virtueSpace(
           _rightContainerDecoration(imageUrl: utils.rightTab), "",
           virtue: virtue);
+
+    if (faction.isVisible) {
+      factionValue = hiddenContainer;
+      if (!faction.wasAlreadyAnimated) {
+        factionValue = SlideTransition(
+            position: _offsetAnimation,
+            textDirection: TextDirection.rtl,
+            child: _virtueSpace(
+          _leftContainerDecoration(imageUrl: utils.leftTab), "",
+          virtue: faction));
+        faction.wasAlreadyAnimated = true;
+        _transition = true;
+      }
+    } else if (!faction.isVisible && faction.wasAlreadyAnimated){
+      factionValue = hiddenContainer;
+    }
+
+    if (virtue.isVisible) {
+      virtueValue = hiddenContainer;
+      if (!virtue.wasAlreadyAnimated) {
+        virtueValue = SlideTransition(
+            position: _offsetAnimation,
+            textDirection: TextDirection.ltr,
+            child: _virtueSpace(
+          _rightContainerDecoration(imageUrl: utils.rightTab), "",
+          virtue: virtue));
+        virtue.wasAlreadyAnimated = true;
+        _transition = true;
+      }
+    } else if(!virtue.isVisible && virtue.wasAlreadyAnimated){
+      virtueValue = hiddenContainer;
+    }
+
+    if (_transition) {
+      _animateResult();
+      _transition = false;
     }
 
     return Row(children: <Widget>[
@@ -177,6 +228,30 @@ class _VirtueCardState extends State<VirtueCard> {
       virtueValue,
       SizedBox(width: _screenSize.width * 0.08),
     ], mainAxisAlignment: MainAxisAlignment.center);
+  }
+
+  _animateResult() {
+    return FutureBuilder(
+      future: _animate(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          print('Data recibida');
+          print(snapshot.data);
+        } else {
+          print('XXXXXX');
+        }
+
+        return Container();
+      },
+    );
+  }
+
+   _animate() async {
+    try {
+      await _controller
+          .forward(from: 0.0)   // start paper animation over
+          .orCancel;
+    } on TickerCanceled {}
   }
 
   GestureDetector _virtueSpace(BoxDecoration decoration, String value,
