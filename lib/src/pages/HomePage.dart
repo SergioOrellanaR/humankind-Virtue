@@ -83,7 +83,23 @@ class _HomePageState extends State<HomePage> {
   }
 
   _backgroundImage() {
-    return Container();
+    if(prefs.faction != Factions.ninguno)
+    {
+      return Center(
+        child: Container(
+        height: _screenSize.height * 0.8,
+        width: _screenSize.width * 0.8,
+        decoration: BoxDecoration(
+          image: DecorationImage(image: utils.factionImage(Factions.values[prefs.faction]),
+          fit: BoxFit.fill)
+        ),
+    ),
+      );
+    }
+    else
+    {
+      return Container();
+    }
   }
 
   PlayerInformationBar _playerInformationBar(

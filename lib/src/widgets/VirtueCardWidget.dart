@@ -151,8 +151,7 @@ class _VirtueCardState extends State<VirtueCard>
     return Text(
       widget.player.playerNumber == 1 ? prefs.playerOne : prefs.playerTwo,
       style: TextStyle(
-          color: utils.defaultThemeColor(prefs.isDarkTheme),
-          fontWeight: FontWeight.bold),
+          fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16.0),
     );
   }
 

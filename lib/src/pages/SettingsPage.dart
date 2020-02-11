@@ -232,10 +232,16 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   BoxDecoration _factionBoxDecoration(Factions faction) {
-    return BoxDecoration(
-        color: utils.defaultThemeColor(_isDarkTheme),
-        border: Border.all(
-            width: 3.0, color: utils.oppositeThemeColor(_isDarkTheme)));
+    if (faction != Factions.ninguno) {
+      return BoxDecoration(
+          color: utils.defaultThemeColor(_isDarkTheme),
+          image: DecorationImage(
+              image: utils.factionImage(faction), fit: BoxFit.contain),
+          border: Border.all(
+              width: 3.0, color: utils.oppositeThemeColor(_isDarkTheme)));
+    } else {
+      return _darkThemeBoxDecoration(_isDarkTheme);
+    }
   }
 
   Radio _optionRadio({bool isDarkTheme, Factions faction}) {
@@ -293,16 +299,22 @@ class _SettingsPageState extends State<SettingsPage> {
   _selectAnimationSpeed() {
     return Column(
       children: <Widget>[
-        Text("Este cambio se producirá al iniciar un nuevo juego.", style: TextStyle(fontSize: 13.0, fontStyle: FontStyle.italic, fontWeight: FontWeight.w300),),
+        Text(
+          "Este cambio se producirá al iniciar un nuevo juego.",
+          style: TextStyle(
+              fontSize: 13.0,
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.w300),
+        ),
         Slider.adaptive(
           min: -2000,
           max: -400,
           value: _animationSpeed.toDouble(),
           divisions: 4,
           onChanged: ((value) => setState(() {
-            _animationSpeed = value.toInt();
-            prefs.animationSpeed = (_animationSpeed * -1);
-          })),
+                _animationSpeed = value.toInt();
+                prefs.animationSpeed = (_animationSpeed * -1);
+              })),
           label: utils.speedValue(prefs.animationSpeed),
           //divisions: 10,
         ),
@@ -310,21 +322,23 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _saveButton() 
-  {
+  Widget _saveButton() {
     return Center(
       child: RaisedButton(
-        child: Padding(
-          //EdgeInsets.symetric para distintos valores UwU
-          padding: EdgeInsets.all(12.0),
-          child: Text("Guardar", style: TextStyle(fontSize: 18.0),),
-        ),
-        onPressed: (){
-          Navigator.pushReplacementNamed(context, "home");
-        },
-        shape: StadiumBorder()),
+          child: Padding(
+            //EdgeInsets.symetric para distintos valores UwU
+            padding: EdgeInsets.all(12.0),
+            child: Text(
+              "Guardar",
+              style: TextStyle(fontSize: 18.0),
+            ),
+          ),
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, "home");
+          },
+          shape: StadiumBorder()),
     );
   }
-        //   _animationSpeed = value.toInt();
-        // prefs.animationSpeed = value.toInt();
+  //   _animationSpeed = value.toInt();
+  // prefs.animationSpeed = value.toInt();
 }
