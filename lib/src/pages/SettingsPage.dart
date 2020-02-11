@@ -38,7 +38,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.of(context).size;
-    return Scaffold(appBar: _appBar(), body: _body(context));
+    return SafeArea(child: Scaffold(appBar: _appBar(), body: _body(context)));
   }
 
   AppBar _appBar() {
@@ -289,7 +289,7 @@ class _SettingsPageState extends State<SettingsPage> {
         Container(
             child: Row(children: <Widget>[
           Text(
-            "Developed by: Sergio Orellana Rey - V${utils.version}",
+            "Developed by: Sergio Orellana Rey - V.A${utils.version}",
             style: TextStyle(fontSize: 12.5),
           ),
           Expanded(child: SizedBox()),

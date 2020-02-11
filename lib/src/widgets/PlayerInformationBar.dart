@@ -41,9 +41,7 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
         Column(
           children: <Widget>[
             _willAndStructureInformation(isWill: false),
-            SizedBox(
-              width: 5.0,
-            ),
+
             _willAndStructureInformation(isWill: true),
             _updateButton()
           ],
@@ -116,15 +114,15 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
 
   _pointsContainer({@required bool isWill}) {
     return Container(
-      width: _screenSize.width * 0.12,
-      height: _screenSize.width * 0.12,
+      width: _screenSize.width * 0.09,
+      height: _screenSize.width * 0.09,
       child: _valueToCounter(isWill: isWill),
       alignment: Alignment.center,
       decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: _counterGradient(isWill: isWill),
           border: Border.all(
-              width: 6.0,
+              width: 2.0,
               color: Color.fromRGBO(180, 180, 180, 1.0),
               style: BorderStyle.solid),
           boxShadow: kElevationToShadow[12]),

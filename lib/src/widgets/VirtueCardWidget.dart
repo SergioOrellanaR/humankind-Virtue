@@ -295,9 +295,17 @@ class _VirtueCardState extends State<VirtueCard>
   }
 
   Widget _tabContent(String value, {AbstractVirtue virtue}) {
-    if(value != "" && virtue is Faction)
+    if(value != "")
     {
-      return Image(image: utils.factionImage(virtue.faction), fit: BoxFit.scaleDown);
+      if(virtue is Faction)
+      {
+        return Image(image: utils.factionImage(virtue.faction), fit: BoxFit.scaleDown);
+      }
+      else
+      {
+        return utils.iconVirtueValue(virtue.value, utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]));
+      }
+      
     }
     else
     {

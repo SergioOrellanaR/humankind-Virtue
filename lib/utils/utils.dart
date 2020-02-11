@@ -123,6 +123,32 @@ String speedValue(int value)
   return text;
 }
 
+Icon iconVirtueValue(String value, Color color)
+{
+  IconData iconData;
+
+  switch(value)
+  {
+    case "-2":
+      iconData = Icons.exposure_neg_2;
+      break;
+    case "-1":
+      iconData = Icons.exposure_neg_1;
+      break;
+    case "0":
+      iconData = Icons.exposure_zero;
+      break;
+    case "1":
+      iconData = Icons.exposure_plus_1;
+      break;
+    case "2":
+      iconData = Icons.exposure_plus_2;
+      break;
+  }
+
+  return Icon(iconData, color: color);
+}
+
 Color mainThemeColor(bool isDarkTheme, Factions faction)
 {
   if(faction == Factions.ninguno)

@@ -65,10 +65,11 @@ class _HomePageState extends State<HomePage> {
   _body() {
     return Column(
       children: <Widget>[
-        Expanded(child: _playerInformationBar(playerInformation: playerTwo)),
+        _playerInformationBar(playerInformation: playerTwo),
         _virtueCard(),
-        Expanded(child: _playerInformationBar(playerInformation: playerOne))
+        _playerInformationBar(playerInformation: playerOne)
       ],
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
     );
   }
 
@@ -98,7 +99,7 @@ class _HomePageState extends State<HomePage> {
   _virtueCard() {
     return Container(
       width: double.infinity,
-      height: _screenSize.height * 0.6,
+      height: _screenSize.height * 0.56,
       child: PageView(
         controller: _pageViewController,
         children: <Widget>[
@@ -115,13 +116,7 @@ class _HomePageState extends State<HomePage> {
         child: Padding(
           //EdgeInsets.symetric para distintos valores UwU
           padding: EdgeInsets.all(12.0),
-          child: Text(
-            "Reiniciar juego",
-            style: TextStyle(
-                fontSize: 18.0,
-                color: utils.oppositeThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
-                fontWeight: FontWeight.bold),
-          ),
+          child: _restartButtonText(),
         ),
         onPressed: () {
           // Navigator.pushReplacementNamed(context, "home");
@@ -137,6 +132,16 @@ class _HomePageState extends State<HomePage> {
         },
         color: utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
         shape: StadiumBorder());
+  }
+
+  Text _restartButtonText() {
+    return Text(
+          "Reiniciar juego",
+          style: TextStyle(
+              fontSize: 18.0,
+              color: utils.oppositeThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
+              fontWeight: FontWeight.bold),
+        );
   }
 
   Center _centerBackgroundImage() {
