@@ -15,15 +15,15 @@ class VirtueCard extends StatefulWidget {
   @override
   _VirtueCardState createState() => _VirtueCardState();
 }
-//TODO: Agregar borde a la fila.
-//TODO: Agregar otras funcionalidades
 
 class _VirtueCardState extends State<VirtueCard>
     with SingleTickerProviderStateMixin {
+
   Size _screenSize;
   String _cardImageUrl;
   VirtuesController _virtuesController;
   int _playerValue;
+
   final prefs = new UserConfig();
   AnimationController _controller;
   Animation<Offset> _offsetAnimation;
@@ -181,11 +181,11 @@ class _VirtueCardState extends State<VirtueCard>
   Row _virtueLine(Faction faction, Virtue virtue) {
     return Row(children: <Widget>[
       SizedBox(width: _screenSize.width * 0.08),
-      _virtueSpace(_leftContainerDecoration(), faction.toString()),
+      _virtueSpace(_leftContainerDecoration(), faction.toString(), virtue: faction),
       SizedBox(
         width: 0.3,
       ),
-      _virtueSpace(_rightContainerDecoration(), virtue.value),
+      _virtueSpace(_rightContainerDecoration(), virtue.value, virtue: virtue),
       SizedBox(width: _screenSize.width * 0.08),
     ], mainAxisAlignment: MainAxisAlignment.center);
   }
@@ -281,22 +281,40 @@ class _VirtueCardState extends State<VirtueCard>
       {AbstractVirtue virtue}) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          if (virtue != null) {
-            virtue.isVisible = true;
-          }
-        });
+        updateVirtueVisibility(virtue);
+      },
+      onHorizontalDragStart: (val) {
+        updateVirtueVisibility(virtue);
       },
       child: Container(
           child: Center(
-              child: Text(
-            value,
-            style: TextStyle(color: Colors.black),
-          )),
+              child: _tabContent(value, virtue: virtue)),
           decoration: decoration,
           width: _screenSize.width * 0.247,
           height: _screenSize.height * 0.06),
     );
+  }
+
+  Widget _tabContent(String value, {AbstractVirtue virtue}) {
+    if(value != "" && virtue is Faction)
+    {
+      return Image(image: utils.factionImage(virtue.faction), fit: BoxFit.scaleDown);
+    }
+    else
+    {
+      return Text(
+          value,
+          style: TextStyle(color: Colors.black),
+        );
+    }
+  }
+
+  void updateVirtueVisibility(AbstractVirtue virtue) {
+    return setState(() {
+        if (virtue != null) {
+          virtue.isVisible = true;
+        }
+      });
   }
 
   BoxDecoration _leftContainerDecoration({String imageUrl}) {

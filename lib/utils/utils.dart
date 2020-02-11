@@ -55,19 +55,19 @@ AssetImage factionImage(Factions faction)
   switch(faction)
   {
     case Factions.ninguno:
-      image = AssetImage("");
+      image = null;
       break;
     case Factions.abismales:
-      image = AssetImage("");
+      image = AssetImage("assets/factions/Abismales.png");
       break;
     case Factions.quimera:
-      image = AssetImage("");
+      image = AssetImage("assets/factions/Quimera.png");
       break;
     case Factions.acracia:
-      image = AssetImage("");
+      image = AssetImage("assets/factions/Acracia.png");
       break;
     case Factions.corporacion:
-      image = AssetImage("");
+      image = AssetImage("assets/factions/Corporacion.png");
       break;
   }
   return image;
@@ -95,6 +95,6 @@ String speedValue(int value)
       text = "Muy lento";
       break;
   }
-  
+
   return text;
 }
