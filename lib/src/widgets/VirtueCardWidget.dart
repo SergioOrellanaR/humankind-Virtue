@@ -27,28 +27,21 @@ class _VirtueCardState extends State<VirtueCard>
   final prefs = new UserConfig();
   AnimationController _controller;
   Animation<Offset> _offsetAnimation;
-  bool _transition = false;
+  bool _needTransition = false;
+  int _animationSpeed;
 
   @override
   void initState() {
     super.initState();
+    _animationSpeed = prefs.animationSpeed;
     _virtuesController = widget.player.virtuesController;
     _playerValue = widget.player.playerNumber;
-    _controller = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    );
-    _offsetAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: const Offset(1.5, 0.0),
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInExpo,
-    ));
+    _initializeController();
+    _initializeOffSetAnimation();
   }
 
   @override
-  void dispose() { 
+  void dispose() {
     _controller?.dispose();
     super.dispose();
   }
@@ -59,6 +52,32 @@ class _VirtueCardState extends State<VirtueCard>
     _cardImageUrl = prefs.isDarkTheme ? 'assets/card2.png' : 'assets/card1.png';
     // return Center(child: _virtueTable());
     return _mainScreen();
+  }
+
+  void _initializeOffSetAnimation()
+  {
+    _offsetAnimation = _setOffsetAnimation().animate(_animationConfig());
+  }
+
+  CurvedAnimation _animationConfig() {
+    return CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeInExpo,
+  );
+  }
+
+  Tween<Offset> _setOffsetAnimation() {
+    return Tween<Offset>(
+    begin: Offset.zero,
+    end: const Offset(1.5, 0.0),
+  );
+  }
+
+  void _initializeController() {
+    _controller = AnimationController(
+    duration: Duration(milliseconds: _animationSpeed),
+    vsync: this,
+  );
   }
 
   Row _mainScreen() {
@@ -175,81 +194,85 @@ class _VirtueCardState extends State<VirtueCard>
     Container hiddenContainer = Container(
         width: _screenSize.width * 0.247, height: _screenSize.height * 0.06);
 
-    Widget factionValue = _virtueSpace(
-          _leftContainerDecoration(imageUrl: utils.leftTab), "",
-          virtue: faction);
-    Widget virtueValue = _virtueSpace(
-          _rightContainerDecoration(imageUrl: utils.rightTab), "",
-          virtue: virtue);
+    Widget factionWidget = _abstractConcealingWidget(abstractVirtue: faction);
+    Widget virtueWidget = _abstractConcealingWidget(abstractVirtue: virtue);
 
-    if (faction.isVisible) {
-      factionValue = hiddenContainer;
-      if (!faction.wasAlreadyAnimated) {
-        factionValue = SlideTransition(
-            position: _offsetAnimation,
-            textDirection: TextDirection.rtl,
-            child: _virtueSpace(
-          _leftContainerDecoration(imageUrl: utils.leftTab), "",
-          virtue: faction));
-        faction.wasAlreadyAnimated = true;
-        _transition = true;
-      }
-    } else if (!faction.isVisible && faction.wasAlreadyAnimated){
-      factionValue = hiddenContainer;
+    if (faction.isVisible && !faction.wasAlreadyAnimated) {
+      factionWidget = _slideTransition(factionWidget, isFaction: true);
+      _needTransition = true;
+      faction.wasAlreadyAnimated = true;
+    } else if (_doesntNeedAnimation(faction)) {
+      factionWidget = hiddenContainer;
     }
 
-    if (virtue.isVisible) {
-      virtueValue = hiddenContainer;
-      if (!virtue.wasAlreadyAnimated) {
-        virtueValue = SlideTransition(
-            position: _offsetAnimation,
-            textDirection: TextDirection.ltr,
-            child: _virtueSpace(
-          _rightContainerDecoration(imageUrl: utils.rightTab), "",
-          virtue: virtue));
-        virtue.wasAlreadyAnimated = true;
-        _transition = true;
-      }
-    } else if(!virtue.isVisible && virtue.wasAlreadyAnimated){
-      virtueValue = hiddenContainer;
+    if (virtue.isVisible && !virtue.wasAlreadyAnimated) {
+      virtueWidget = _slideTransition(virtueWidget, isFaction: false);
+      _needTransition = true;
+      virtue.wasAlreadyAnimated = true;
+    } else if (_doesntNeedAnimation(virtue)) {
+      virtueWidget = hiddenContainer;
     }
 
-    if (_transition) {
+    if (_needTransition) {
       _animateResult();
-      _transition = false;
+      _needTransition = false;
     }
 
     return Row(children: <Widget>[
       SizedBox(width: _screenSize.width * 0.08),
-      factionValue,
+      factionWidget,
       SizedBox(
         width: 0.3,
       ),
-      virtueValue,
+      virtueWidget,
       SizedBox(width: _screenSize.width * 0.08),
     ], mainAxisAlignment: MainAxisAlignment.center);
+  }
+
+  GestureDetector _abstractConcealingWidget({@required AbstractVirtue abstractVirtue}) 
+  {
+    if(abstractVirtue is Faction)
+    {
+      return _virtueSpace(
+      _leftContainerDecoration(imageUrl: utils.leftTab), "",
+      virtue: abstractVirtue);
+    }
+    else
+    {
+      return _virtueSpace(
+        _rightContainerDecoration(imageUrl: utils.rightTab), "",
+        virtue: abstractVirtue);
+    }
+  }
+
+  SlideTransition _slideTransition(Widget abstractVirtueWidget, {@required bool isFaction}) {
+    TextDirection textDirection = isFaction ? TextDirection.rtl : TextDirection.ltr;
+
+    return SlideTransition(
+        position: _offsetAnimation,
+        textDirection: textDirection,
+        child: abstractVirtueWidget);
+  }
+
+  _doesntNeedAnimation(AbstractVirtue virtue)
+  {
+    return((!virtue.isVisible && virtue.wasAlreadyAnimated) ||
+        (virtue.isVisible && virtue.wasAlreadyAnimated));
   }
 
   _animateResult() {
     return FutureBuilder(
       future: _animate(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          print('Data recibida');
-          print(snapshot.data);
-        } else {
-          print('XXXXXX');
-        }
-
         return Container();
       },
     );
   }
 
-   _animate() async {
+  _animate() async {
     try {
       await _controller
-          .forward(from: 0.0)   // start paper animation over
+          .forward(from: 0.0) // start paper animation over
           .orCancel;
     } on TickerCanceled {}
   }
@@ -349,4 +372,6 @@ class _VirtueCardState extends State<VirtueCard>
       },
     );
   }
+
+  
 }

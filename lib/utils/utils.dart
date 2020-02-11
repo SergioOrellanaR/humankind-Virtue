@@ -72,3 +72,29 @@ AssetImage factionImage(Factions faction)
   }
   return image;
 }
+
+String speedValue(int value)
+{
+  String text;
+
+  switch(value)
+  {
+    case 400:
+      text = "Muy rápido";
+      break;
+    case 800:
+      text = "Rápido";
+      break;
+    case 1200:
+      text = "Normal";
+      break;
+    case 1600:
+      text = "Lento";
+      break;
+    case 2000:
+      text = "Muy lento";
+      break;
+  }
+  
+  return text;
+}

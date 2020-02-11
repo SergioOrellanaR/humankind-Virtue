@@ -78,5 +78,14 @@ class UserConfig
   {
     _prefs.setInt("faction", value.index);
   }
-  
+
+  get animationSpeed 
+  {
+    //Doble signo de interrogación para preguntar si es NULL
+    return _prefs.getInt("animationSpeed") ?? 1600;
+  }
+  set animationSpeed(int value)
+  {
+    _prefs.setInt("animationSpeed", value);
+  }
 }

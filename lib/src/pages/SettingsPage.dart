@@ -14,6 +14,7 @@ class _SettingsPageState extends State<SettingsPage> {
   String _playerTwo;
   int _defaultWill;
   int _defaultStructure;
+  int _animationSpeed;
   bool _isDarkTheme;
   Factions _faction;
 
@@ -28,6 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
     _playerTwo = prefs.playerTwo;
     _defaultWill = prefs.defaultWill;
     _defaultStructure = prefs.defaultStructure;
+    _animationSpeed = prefs.animationSpeed * -1;
     _isDarkTheme = prefs.isDarkTheme;
     _faction = Factions.values[prefs.faction];
   }
@@ -35,10 +37,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-        appBar: _appBar(),
-        body: _body()
-        );
+    return Scaffold(appBar: _appBar(), body: _body());
   }
 
   AppBar _appBar() {
@@ -48,36 +47,37 @@ class _SettingsPageState extends State<SettingsPage> {
   ListView _body() {
     return ListView(
       children: <Widget>[
-        Divider(),
         _subTitle("Jugadores"),
-        Divider(),
         _playerInformation(playerNumber: 1),
         _playerInformation(playerNumber: 2),
-        Divider(),
         _subTitle("Valores"),
-        Divider(),
         _willOrStructureValue(isWill: false),
         _willOrStructureValue(isWill: true),
-        Divider(),
+        _subTitle("Animación"),
+        _selectAnimationSpeed(),
         _subTitle("Tema"),
-        Divider(),
         _selectTheme(),
-        Divider(),
         _subTitle("Facción"),
-        Divider(),
         _selectFaction(),
-        Divider(),
+        // Divider(),
+        // _saveButton(),
         _footer()
       ],
     );
   }
 
-  Container _subTitle(String value) {
-    return Container(
-      child: Text(
-        value,
-        style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-      ),
+  _subTitle(String value) {
+    return Column(
+      children: <Widget>[
+        Divider(),
+        Container(
+          child: Text(
+            value,
+            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+          ),
+        ),
+        Divider()
+      ],
     );
   }
 
@@ -266,20 +266,65 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   _footer() {
-    return Container(
-      child: Row(children: <Widget>[
-        Text("Developed by: Sergio Orellana Rey - V${utils.version}", style: TextStyle(fontSize: 12.5),),
-        Expanded(child: SizedBox()),
-        Image(
-          image: AssetImage("assets/OrellanaLogo.png"),
-          fit: BoxFit.scaleDown,
-          width: 50,
-          height: 50,
-        ),
-        SizedBox(
-          width: 10,
-        )
-      ])
+    return Column(
+      children: <Widget>[
+        Divider(),
+        Container(
+            child: Row(children: <Widget>[
+          Text(
+            "Developed by: Sergio Orellana Rey - V${utils.version}",
+            style: TextStyle(fontSize: 12.5),
+          ),
+          Expanded(child: SizedBox()),
+          Image(
+            image: AssetImage("assets/OrellanaLogo.png"),
+            fit: BoxFit.scaleDown,
+            width: 50,
+            height: 50,
+          ),
+          SizedBox(
+            width: 10,
+          )
+        ])),
+      ],
     );
   }
+
+  _selectAnimationSpeed() {
+    return Column(
+      children: <Widget>[
+        Text("Este cambio se producirá al iniciar un nuevo juego.", style: TextStyle(fontSize: 13.0, fontStyle: FontStyle.italic, fontWeight: FontWeight.w300),),
+        Slider.adaptive(
+          min: -2000,
+          max: -400,
+          value: _animationSpeed.toDouble(),
+          divisions: 4,
+          onChanged: ((value) => setState(() {
+            _animationSpeed = value.toInt();
+            prefs.animationSpeed = (_animationSpeed * -1);
+          })),
+          label: utils.speedValue(prefs.animationSpeed),
+          //divisions: 10,
+        ),
+      ],
+    );
+  }
+
+  Widget _saveButton() 
+  {
+    return Center(
+      child: RaisedButton(
+        child: Padding(
+          //EdgeInsets.symetric para distintos valores UwU
+          padding: EdgeInsets.all(12.0),
+          child: Text("Guardar", style: TextStyle(fontSize: 18.0),),
+        ),
+        onPressed: (){
+          Navigator.pushReplacementNamed(context, "home");
+        },
+        shape: StadiumBorder()),
+    );
+  }
+        //   _animationSpeed = value.toInt();
+        // prefs.animationSpeed = value.toInt();
 }

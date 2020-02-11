@@ -42,7 +42,9 @@ class _HomePageState extends State<HomePage> {
   Row _settings(BuildContext context) {
     return Row(
       children: <Widget>[
-        SizedBox(width: _screenSize.width * 0.08,),
+        SizedBox(
+          width: _screenSize.width * 0.08,
+        ),
         FloatingActionButton(
           child: Icon(Icons.settings),
           backgroundColor: utils.oppositeThemeColor(prefs.isDarkTheme),
@@ -51,6 +53,10 @@ class _HomePageState extends State<HomePage> {
           },
           heroTag: "settingsButton",
         ),
+        SizedBox(
+          width: _screenSize.width * 0.1,
+        ),
+        _restartButton(),
       ],
       mainAxisAlignment: MainAxisAlignment.start,
     );
@@ -61,7 +67,9 @@ class _HomePageState extends State<HomePage> {
       children: <Widget>[
         _playerInformationBar(playerInformation: playerTwo),
         _virtueCard(),
-        Expanded(child: SizedBox(),),
+        Expanded(
+          child: SizedBox(),
+        ),
         _playerInformationBar(playerInformation: playerOne)
       ],
     );
@@ -78,7 +86,8 @@ class _HomePageState extends State<HomePage> {
     return Container();
   }
 
-  PlayerInformationBar _playerInformationBar({PlayerInformation playerInformation}) {   
+  PlayerInformationBar _playerInformationBar(
+      {PlayerInformation playerInformation}) {
     return PlayerInformationBar(playerInformation: playerInformation);
   }
 
@@ -89,10 +98,37 @@ class _HomePageState extends State<HomePage> {
       child: PageView(
         controller: _pageViewController,
         children: <Widget>[
-          VirtueCard(player: playerOne, pageViewController: _pageViewController),
+          VirtueCard(
+              player: playerOne, pageViewController: _pageViewController),
           VirtueCard(player: playerTwo, pageViewController: _pageViewController)
         ],
       ),
     );
+  }
+
+  Widget _restartButton() {
+    return RaisedButton(
+        child: Padding(
+          //EdgeInsets.symetric para distintos valores UwU
+          padding: EdgeInsets.all(12.0),
+          child: Text(
+            "Reiniciar juego",
+            style: TextStyle(fontSize: 18.0, color: utils.defaultThemeColor(prefs.isDarkTheme), fontWeight: FontWeight.bold),
+          ),
+        ),
+        onPressed: () {
+          // Navigator.pushReplacementNamed(context, "home");
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, anim1, anim2) => HomePage(),
+              transitionsBuilder: (context, anim1, anim2, child) =>
+                  FadeTransition(opacity: anim1, child: child),
+              transitionDuration: Duration(seconds: 1),
+            ),
+          );
+        },
+        color: utils.oppositeThemeColor(prefs.isDarkTheme),
+        shape: StadiumBorder());
   }
 }
