@@ -165,7 +165,7 @@ Color oppositeThemeColor(bool isDarkTheme, Factions faction) {
   return darkAndLightOppositeThemeColor(isDarkTheme);
 }
 
-Future<Map<int, Avatar>> loadAvatars() async {
+loadAvatars() async {
   final data = await rootBundle.loadString('data/avatars.json');
   final dataMap = json.decode(data);
   int counter = 0;

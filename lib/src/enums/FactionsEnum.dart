@@ -1,4 +1,3 @@
-import 'package:humankind/src/config/UserConfig.dart';
 import 'package:humankind/src/models/AvatarModel.dart';
 
 enum Factions { ninguno, abismales, quimera, acracia, corporacion }

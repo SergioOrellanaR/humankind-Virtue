@@ -17,7 +17,6 @@ class _SettingsPageState extends State<SettingsPage> {
   int _animationSpeed;
   bool _isDarkTheme;
   Factions _faction;
-  bool _isSelected = false;
 
   TextEditingController _textEditingController;
   Size _screenSize;

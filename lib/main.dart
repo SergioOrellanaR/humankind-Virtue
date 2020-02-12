@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:humankind/src/config/UserConfig.dart';
-import 'package:humankind/src/models/AvatarModel.dart';
 import 'package:humankind/utils/utils.dart' as utils;
 import 'package:humankind/utils/routes.dart' as routes;
 
