@@ -179,7 +179,7 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
 
     if(isWill && value.length == 5)
     {
-      style = TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12.0);
+      style = TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 9.5);
     }
     
     return Text(value, style: style);
