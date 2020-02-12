@@ -1,0 +1,78 @@
+[{
+        "illustrator": "Genzo",
+        "gender": "Femenino",
+        "faction": "4",
+        "name": "Adriana San Patricio",
+        "source": "assets/avatars/Adriana San Patricio.jpg"
+    },
+    {
+        "illustrator": "Sergio Lantadilla",
+        "gender": "Masculino",
+        "faction": "4",
+        "name": "Avatar",
+        "source": "assets/avatars/Avatars.jpg"
+    },
+    {
+        "illustrator": "Mauricio Herrera",
+        "gender": "Femenino",
+        "faction": "4",
+        "name": "Karina Silverbullet",
+        "source": "assets/avatars/Karina Silverbullet.jpg"
+    },
+    {
+        "illustrator": "Genzo",
+        "gender": "Femenino",
+        "faction": "2",
+        "name": "Anita",
+        "source": "assets/avatars/Anita.jpg"
+    },
+    {
+        "illustrator": "Mauricio Herrera",
+        "gender": "Masculino",
+        "faction": "4",
+        "name": "Antoine Silverbullet",
+        "source": "assets/avatars/Antoine Silverbullet.jpg"
+    },
+    {
+        "illustrator": "Sergio Lantadilla",
+        "gender": "Masculino",
+        "faction": "2",
+        "name": "Eric",
+        "source": "assets/avatars/Eric.jpg"
+    },
+    {
+        "illustrator": "Mauricio Herrera",
+        "gender": "Femenino",
+        "faction": "2",
+        "name": "Latex",
+        "source": "assets/avatars/Latex.jpg"
+    },
+    {
+        "illustrator": "Sergio Lantadilla",
+        "gender": "Masculino",
+        "faction": "1",
+        "name": "Petrov Ivanovich",
+        "source": "assets/avatars/Petrov Ivanovich.jpg"
+    },
+    {
+        "illustrator": "Sergio Lantadilla",
+        "gender": "Masculino",
+        "faction": "3",
+        "name": "Sombra",
+        "source": "assets/avatars/Sombra.jpg"
+    },
+    {
+        "illustrator": "Sergio Quijada",
+        "gender": "Femenino",
+        "faction": "3",
+        "name": "Tamara",
+        "source": "assets/avatars/Tamara.jpg"
+    },
+    {
+        "illustrator": "Cristián Gonzalez",
+        "gender": "Femenino",
+        "faction": "2",
+        "name": "Vanessa Lanthier",
+        "source": "assets/avatars/Vanessa Lanthier.jp"
+    }
+]

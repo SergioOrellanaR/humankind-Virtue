@@ -1,35 +1,35 @@
+import 'dart:convert';
+
 import 'package:basic_utils/basic_utils.dart';
+import 'package:flutter/services.dart';
 import 'package:humankind/src/enums/FactionsEnum.dart';
 import 'package:flutter/material.dart';
-
+import 'package:humankind/src/models/AvatarModel.dart';
+import 'globals.dart' as globals;
+export 'globals.dart';
 
 final String appName = 'Humankind Virtue';
 final String version = '1.0.3';
 final String leftTab = 'assets/tabs/leftTab.png';
-final String rightTab ='assets/tabs/rightTab.png';
+final String rightTab = 'assets/tabs/rightTab.png';
 
-stringfiedFaction(Factions factEnum)
-  {
-    int factionNameIndex = 1;
-    String stringedValue = factEnum.toString();
-    return StringUtils.capitalize(stringedValue.split('.')[factionNameIndex]);
-  }
+stringfiedFaction(Factions factEnum) {
+  int factionNameIndex = 1;
+  String stringedValue = factEnum.toString();
+  return StringUtils.capitalize(stringedValue.split('.')[factionNameIndex]);
+}
 
-Color darkAndLightThemeColor(bool isDarkTheme)
-{
+Color darkAndLightThemeColor(bool isDarkTheme) {
   return (isDarkTheme) ? Color.fromRGBO(100, 100, 100, 1.0) : Colors.white;
 }
 
-Color darkAndLightOppositeThemeColor(bool isDarkTheme)
-{
+Color darkAndLightOppositeThemeColor(bool isDarkTheme) {
   return (isDarkTheme) ? Colors.white : Color.fromRGBO(30, 30, 30, 1.0);
 }
 
-Color factionColor(Factions faction)
-{
+Color factionColor(Factions faction) {
   Color color;
-  switch(faction)
-  {
+  switch (faction) {
     case Factions.ninguno:
       color = Colors.transparent;
       break;
@@ -49,11 +49,9 @@ Color factionColor(Factions faction)
   return color;
 }
 
-Color oppositefactionColor(Factions faction)
-{
+Color oppositefactionColor(Factions faction) {
   Color color;
-  switch(faction)
-  {
+  switch (faction) {
     case Factions.ninguno:
       color = Colors.transparent;
       break;
@@ -73,11 +71,9 @@ Color oppositefactionColor(Factions faction)
   return color;
 }
 
-AssetImage factionImage(Factions faction)
-{
+AssetImage factionImage(Factions faction) {
   AssetImage image;
-  switch(faction)
-  {
+  switch (faction) {
     case Factions.ninguno:
       image = null;
       break;
@@ -97,12 +93,10 @@ AssetImage factionImage(Factions faction)
   return image;
 }
 
-String speedValue(int value)
-{
+String speedValue(int value) {
   String text;
 
-  switch(value)
-  {
+  switch (value) {
     case 400:
       text = "Muy rápido";
       break;
@@ -123,17 +117,14 @@ String speedValue(int value)
   return text;
 }
 
-Icon iconVirtueValue(String value, Color color)
-{
+Icon iconVirtueValue(String value, Color color) {
   IconData iconData;
 
-  if(color == Colors.white)
-  {
+  if (color == Colors.white) {
     color = Colors.black;
   }
 
-  switch(value)
-  {
+  switch (value) {
     case "-2":
       iconData = Icons.exposure_neg_2;
       break;
@@ -153,20 +144,15 @@ Icon iconVirtueValue(String value, Color color)
   return Icon(iconData, color: color);
 }
 
-Color mainThemeColor(bool isDarkTheme, Factions faction)
-{
-  if(faction == Factions.ninguno)
-  {
+Color mainThemeColor(bool isDarkTheme, Factions faction) {
+  if (faction == Factions.ninguno) {
     return darkAndLightThemeColor(isDarkTheme);
-  }
-  else
-  {
+  } else {
     return factionColor(faction);
   }
 }
 
-Color oppositeThemeColor(bool isDarkTheme, Factions faction)
-{
+Color oppositeThemeColor(bool isDarkTheme, Factions faction) {
   ////ESTE MÉTODO ESTÁ COMENTADO PARA FUNCIONALIDADES ACTUALES, PERO PODRÍA SER UTIL EN EL FUTURO.
   // if(faction == Factions.ninguno)
   // {
@@ -177,4 +163,18 @@ Color oppositeThemeColor(bool isDarkTheme, Factions faction)
   //   return oppositefactionColor(faction);
   // }
   return darkAndLightOppositeThemeColor(isDarkTheme);
+}
+
+Future<Map<int, Avatar>> loadAvatars() async {
+  final data = await rootBundle.loadString('data/avatars.json');
+  final dataMap = json.decode(data);
+  int counter = 0;
+  Map<int, Avatar> mapInformation = new Map<int, Avatar>();
+
+  for (var item in dataMap) {
+    Avatar avatar = Avatar.fromJson(item);
+    mapInformation.putIfAbsent(counter, () => avatar);
+    counter++;
+  }
+  globals.avatarsMap = mapInformation;
 }

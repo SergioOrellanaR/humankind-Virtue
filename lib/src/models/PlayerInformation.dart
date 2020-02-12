@@ -8,8 +8,7 @@ class PlayerInformation {
   int playerNumber;
   VirtuesController virtuesController;
 
-  PlayerInformation.playerOne({UserConfig userConfig})
-  {
+  PlayerInformation.playerOne({UserConfig userConfig}) {
     structure = userConfig.defaultStructure;
     will = userConfig.defaultWill;
     savedWill = userConfig.defaultWill;
@@ -17,8 +16,7 @@ class PlayerInformation {
     virtuesController = new VirtuesController();
   }
 
-  PlayerInformation.playerTwo()
-  {
+  PlayerInformation.playerTwo() {
     structure = 15;
     will = 4;
     savedWill = 4;

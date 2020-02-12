@@ -88,4 +88,24 @@ class UserConfig
   {
     _prefs.setInt("animationSpeed", value);
   }
+
+  get playerOneAvatar 
+  {
+    //Doble signo de interrogación para preguntar si es NULL
+    return _prefs.getInt("playerOneAvatar") ?? 0;
+  }
+  set playerOneAvatar(int value)
+  {
+    _prefs.setInt("playerOneAvatar", value);
+  }
+
+  get playerTwoAvatar 
+  {
+    //Doble signo de interrogación para preguntar si es NULL
+    return _prefs.getInt("playerTwoAvatar") ?? 0;
+  }
+  set playerTwoAvatar(int value)
+  {
+    _prefs.setInt("playerTwoAvatar", value);
+  }
 }
