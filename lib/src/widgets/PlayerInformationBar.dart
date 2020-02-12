@@ -162,7 +162,7 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
           gradient: _counterGradient(isWill: isWill),
           border: Border.all(
               width: 2.0,
-              color: Color.fromRGBO(180, 180, 180, 1.0),
+              color: utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
               style: BorderStyle.solid),
           boxShadow: kElevationToShadow[12]),
     );
@@ -213,16 +213,19 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
         child: Icon(Icons.lock_outline));
   }
 
-  _avatarImage() 
+  Container _avatarImage() 
   {
     AssetImage avatarImage;
+    Color borderColor;
     if(_playerNumber == 1)
     {
       avatarImage = AssetImage(utils.avatarsMap[prefs.playerOneAvatar].source);
+      borderColor = utils.factionColor(utils.avatarsMap[prefs.playerOneAvatar].faction);
     }
     else
     {
       avatarImage = AssetImage(utils.avatarsMap[prefs.playerTwoAvatar].source);
+      borderColor = utils.factionColor(utils.avatarsMap[prefs.playerTwoAvatar].faction);
     }
 
     return Container(
@@ -233,7 +236,7 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
         color: Colors.red,
         border: Border.all(
             width: 3.0,
-            color: utils.darkAndLightOppositeThemeColor(prefs.isDarkTheme)),
+            color: borderColor),
         image: DecorationImage(
           image: avatarImage,
           fit: BoxFit.contain)

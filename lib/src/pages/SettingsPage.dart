@@ -314,18 +314,26 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Column(children: <Widget>[
           _avatarOptionContainer(avatar: avatar),
           _illustratorText(avatar.illustrator),
-          Row(
-            children: <Widget>[
-              _radioAvatar(isPlayerOne: true, index: index),
-              _radioAvatar(isPlayerOne: false, index: index),
-            ],
-            mainAxisAlignment: MainAxisAlignment.center,
-          ),
-          Text(
-            avatar.name,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          )
+          _avatarRadioButtons(index),
+          _avatarImageName(avatar)
         ]));
+  }
+
+  Text _avatarImageName(Avatar avatar) {
+    return Text(
+          avatar.name,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        );
+  }
+
+  Row _avatarRadioButtons(int index) {
+    return Row(
+          children: <Widget>[
+            _radioAvatar(isPlayerOne: true, index: index),
+            _radioAvatar(isPlayerOne: false, index: index),
+          ],
+          mainAxisAlignment: MainAxisAlignment.center,
+        );
   }
 
   Text _illustratorText(String illustratorName) {
@@ -351,8 +359,8 @@ class _SettingsPageState extends State<SettingsPage> {
         image: DecorationImage(image: avatarImage, fit: BoxFit.contain),
         shape: BoxShape.circle,
         border: Border.all(
-            width: 3.0,
-            color: utils.darkAndLightOppositeThemeColor(_isDarkTheme)));
+            width: 4.0,
+            color: utils.factionColor(avatar.faction)));
   }
 
   _radioAvatar({bool isPlayerOne, index}) {
@@ -370,7 +378,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   _explanatoryRadio({bool isPlayerOne}) {
     Color color = isPlayerOne ? Colors.blue : Colors.red;
-
     return RadioListTile(
       title: Text("Color de Jugador ${isPlayerOne ? 1 : 2}"),
       subtitle: Text("Botón a la ${isPlayerOne ? "izquierda" : "derecha"}"),

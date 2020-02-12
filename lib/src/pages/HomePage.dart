@@ -150,37 +150,6 @@ class _HomePageState extends State<HomePage> {
         },
       ),
     );
-    // return RaisedButton(
-    //     child: Padding(
-    //       //EdgeInsets.symetric para distintos valores UwU
-    //       padding: EdgeInsets.all(0.0),
-    //       child: _restartButtonText(),
-    //     ),
-    //     onPressed: () {
-    //       // Navigator.pushReplacementNamed(context, "home");
-    //       Navigator.push(
-    //         context,
-    //         PageRouteBuilder(
-    //           pageBuilder: (context, anim1, anim2) => HomePage(),
-    //           transitionsBuilder: (context, anim1, anim2, child) =>
-    //               FadeTransition(opacity: anim1, child: child),
-    //           transitionDuration: Duration(seconds: 1),
-    //         ),
-    //       );
-    //     },
-    //     color: utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
-    //     shape: StadiumBorder());
-  }
-
-  Text _restartButtonText() {
-    return Text(
-      "Reiniciar juego",
-      style: TextStyle(
-          fontSize: 16.0,
-          color: utils.oppositeThemeColor(
-              prefs.isDarkTheme, Factions.values[prefs.faction]),
-          fontWeight: FontWeight.bold),
-    );
   }
 
   Center _centerBackgroundImage() {
