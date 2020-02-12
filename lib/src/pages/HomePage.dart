@@ -42,13 +42,10 @@ class _HomePageState extends State<HomePage> {
   Row _actionButtons(BuildContext context) {
     return Row(
       children: <Widget>[
+        SizedBox(width: _screenSize.width * 0.07,),
         _settingsButton(context),
-        _restartButton(),
-        SizedBox(
-          width: _screenSize.width * 0.02,
-        ),
       ],
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.start,
     );
   }
 

@@ -102,7 +102,7 @@ class UserConfig
   get playerTwoAvatar 
   {
     //Doble signo de interrogación para preguntar si es NULL
-    return _prefs.getInt("playerTwoAvatar") ?? 0;
+    return _prefs.getInt("playerTwoAvatar") ?? 1;
   }
   set playerTwoAvatar(int value)
   {

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:humankind/src/config/UserConfig.dart';
 import 'package:humankind/src/models/PlayerInformation.dart';
+import 'package:humankind/utils/utils.dart' as utils;
 
 class PlayerInformationBar extends StatefulWidget {
   final PlayerInformation playerInformation;
@@ -18,6 +20,7 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
   int _playerNumber;
   bool _buttonPressedOnOperation = false;
   bool _loopActiveOnOperation = false;
+  final prefs = new UserConfig();
 
   @override
   void initState() {
@@ -35,21 +38,57 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
   }
 
   _rowInformation() {
+    return _playerNumber == 1 ? _playerOneInformation() : _playerTwoInformation();
+  }
+
+  _playerOneInformation()
+  {
     return Row(
       children: <Widget>[
-        _playerNumber == 1 ? _expanded() : Container(),
-        Column(
-          children: <Widget>[
-            _willAndStructureInformation(isWill: false),
+        _expanded(),
+        _willInformation(),
+        SizedBox(width: _screenSize.width * 0.08,),
+        _structureInformation(),
+        SizedBox(width: _screenSize.width * 0.02,),
+        _avatarImage(),
+      ],
+    );
 
-            _willAndStructureInformation(isWill: true),
-            _updateButton()
-          ],
-        ),
-        _playerNumber == 2 ? _expanded() : Container(),
+  }
+
+  _playerTwoInformation()
+  {
+    return Row(
+      children: <Widget>[
+        _avatarImage(),
+        SizedBox(width: _screenSize.width * 0.02,),
+        _structureInformation(),
+        SizedBox(width: _screenSize.width * 0.08,),
+        _willInformation(),
+        _expanded()
       ],
     );
   }
+
+  Column _willInformation() {
+    return Column(
+        children: <Widget>[
+          _willAndStructureInformation(isWill: true),
+          _updateButton()
+        ],
+      );
+  }
+
+  Column _structureInformation() {
+    return Column(
+        children: <Widget>[
+          _willAndStructureInformation(isWill: false),
+          _fakeIcon()
+        ],
+      );
+  }
+
+  Icon _fakeIcon() => Icon(Icons.lock_outline, color: Colors.transparent,);
 
   Expanded _expanded() {
     return Expanded(
@@ -172,5 +211,29 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
           });
         },
         child: Icon(Icons.lock_outline));
+  }
+
+  _avatarImage() 
+  {
+    AssetImage avatarImage;
+    if(_playerNumber == 1)
+    {
+      avatarImage = AssetImage(utils.avatarsMap[prefs.playerOneAvatar].source);
+    }
+    else
+    {
+      avatarImage = AssetImage(utils.avatarsMap[prefs.playerTwoAvatar].source);
+    }
+
+    return Container(
+      width: _screenSize.width * 0.25,
+      height: _screenSize.width * 0.25,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.red,
+        image: DecorationImage(
+          image: avatarImage)
+        )
+      );
   }
 }
