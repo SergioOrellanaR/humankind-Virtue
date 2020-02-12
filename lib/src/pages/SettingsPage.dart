@@ -20,7 +20,6 @@ class _SettingsPageState extends State<SettingsPage> {
   Factions _faction;
   int _playerOneAvatar;
   int _playerTwoAvatar;
-
   TextEditingController _textEditingController;
   Size _screenSize;
   final prefs = new UserConfig();
@@ -42,22 +41,58 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.of(context).size;
-    return SafeArea(child: Scaffold(appBar: _appBar(), body: _body(context)));
+    int _initialTabIndex = ModalRoute.of(context).settings.arguments ?? 0;
+    return _tabController(_initialTabIndex);
+  }
+
+  DefaultTabController _tabController(int _initialTabIndex) {
+    return DefaultTabController(
+      length: 3,
+      child: _mainScaffold(),
+      initialIndex: _initialTabIndex,
+    );
+  }
+
+  Scaffold _mainScaffold() {
+    return Scaffold(appBar: _appBar(), body: _tabContent());
   }
 
   AppBar _appBar() {
     if (prefs.faction != Factions.ninguno.index) {
       return AppBar(
         title: Text("Ajustes"),
+        centerTitle: true,
         backgroundColor: utils.mainThemeColor(
             prefs.isDarkTheme, Factions.values[prefs.faction]),
+        bottom: TabBar(tabs: [
+          Tab(icon: Icon(Icons.settings)),
+          Tab(icon: Icon(Icons.settings_system_daydream)),
+          Tab(icon: Icon(Icons.face)),
+        ], indicatorColor: Colors.white),
       );
     } else {
-      return AppBar(title: Text("Ajustes"));
+      return AppBar(
+        title: Text("Ajustes"),
+        centerTitle: true,
+        bottom: TabBar(
+          tabs: [
+            Tab(icon: Icon(Icons.settings)),
+            Tab(icon: Icon(Icons.settings_system_daydream)),
+            Tab(icon: Icon(Icons.face)),
+          ],
+          indicatorColor: Colors.white,
+        ),
+      );
     }
   }
 
-  ListView _body(BuildContext context) {
+  TabBarView _tabContent() {
+    return TabBarView(
+      children: <Widget>[_settingsTab(), _themeTab(), _avatarTab()],
+    );
+  }
+
+  ListView _settingsTab() {
     return ListView(
       children: <Widget>[
         _subTitle("Jugadores"),
@@ -68,21 +103,38 @@ class _SettingsPageState extends State<SettingsPage> {
         _willOrStructureValue(isWill: true),
         _subTitle("Velocidad de Animación"),
         _selectAnimationSpeed(),
-        _subTitle("Tema"),
-        _selectTheme(),
-        _subTitle("Facción"),
-        _selectFaction(),
-        _subTitle("Avatar"),
-        _explainAvatarSelect(),
-        _selectAvatar(),
         Divider(),
-        _saveButton(context),
         _footer()
       ],
     );
   }
 
-  _subTitle(String value) {
+  ListView _themeTab() {
+    return ListView(
+      children: <Widget>[
+        _subTitle("Tema"),
+        _selectTheme(),
+        _subTitle("Facción"),
+        _selectFaction(),
+        Divider(),
+        _footer()
+      ],
+    );
+  }
+
+  ListView _avatarTab() {
+    return ListView(
+      children: <Widget>[
+        _subTitle("Avatar"),
+        _explainAvatarSelect(),
+        _selectAvatar(),
+        Divider(),
+        _footer()
+      ],
+    );
+  }
+
+  Column _subTitle(String value) {
     return Column(
       children: <Widget>[
         Divider(),
@@ -187,14 +239,40 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  _selectTheme() {
+  Column _selectAnimationSpeed() {
+    return Column(
+      children: <Widget>[
+        Text(
+          "Este cambio se producirá al iniciar un nuevo juego.",
+          style: TextStyle(
+              fontSize: 13.0,
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.w300),
+        ),
+        Slider.adaptive(
+          min: -2000,
+          max: -400,
+          value: _animationSpeed.toDouble(),
+          divisions: 4,
+          onChanged: ((value) => setState(() {
+                _animationSpeed = value.toInt();
+                prefs.animationSpeed = (_animationSpeed * -1);
+              })),
+          label: utils.speedValue(prefs.animationSpeed),
+          //divisions: 10,
+        ),
+      ],
+    );
+  }
+
+  Row _selectTheme() {
     return Row(children: <Widget>[
       _containerTheme(isDarkTheme: false),
       _containerTheme(isDarkTheme: true)
     ], mainAxisAlignment: MainAxisAlignment.spaceEvenly);
   }
 
-  _selectFaction() {
+  Wrap _selectFaction() {
     return Wrap(
         children: <Widget>[
           _containerTheme(faction: Factions.ninguno),
@@ -225,7 +303,7 @@ class _SettingsPageState extends State<SettingsPage> {
     ]);
   }
 
-  _optionContainer({bool isDarkTheme, Factions faction}) {
+  GestureDetector _optionContainer({bool isDarkTheme, Factions faction}) {
     return GestureDetector(
       onTap: () => faction == null
           ? _setSelectedTheme(isDarkTheme)
@@ -273,7 +351,7 @@ class _SettingsPageState extends State<SettingsPage> {
         });
   }
 
-  _setSelectedTheme(bool value) {
+  void _setSelectedTheme(bool value) {
     setState(() {
       _isDarkTheme = value;
       prefs.isDarkTheme = value;
@@ -282,14 +360,23 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
-  _setSelectedFaction(Factions faction) {
+  void _setSelectedFaction(Factions faction) {
     setState(() {
       _faction = faction;
       prefs.faction = faction;
     });
   }
 
-  _selectAvatar() {
+  Wrap _explainAvatarSelect() {
+    return Wrap(
+      children: <Widget>[
+        _explanatoryRadio(isPlayerOne: true),
+        _explanatoryRadio(isPlayerOne: false)
+      ],
+    );
+  }
+
+  Wrap _selectAvatar() {
     return Wrap(
         children: _avatarList(),
         direction: Axis.horizontal,
@@ -310,35 +397,35 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _avatarContainer({Avatar avatar, int index}) {
     return Container(
-        width: _screenSize.width * 0.5,
+        width: _screenSize.width * 0.3,
         child: Column(children: <Widget>[
           _avatarOptionContainer(avatar: avatar),
           _illustratorText(avatar.illustrator),
           _avatarRadioButtons(index),
-          _avatarImageName(avatar)
+          _avatarName(avatar)
         ]));
   }
 
-  Text _avatarImageName(Avatar avatar) {
+  Text _avatarName(Avatar avatar) {
     return Text(
-          avatar.name,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        );
+      avatar.name,
+      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11.0),
+    );
   }
 
   Row _avatarRadioButtons(int index) {
     return Row(
-          children: <Widget>[
-            _radioAvatar(isPlayerOne: true, index: index),
-            _radioAvatar(isPlayerOne: false, index: index),
-          ],
-          mainAxisAlignment: MainAxisAlignment.center,
-        );
+      children: <Widget>[
+        _radioAvatar(isPlayerOne: true, index: index),
+        _radioAvatar(isPlayerOne: false, index: index),
+      ],
+      mainAxisAlignment: MainAxisAlignment.center,
+    );
   }
 
   Text _illustratorText(String illustratorName) {
     TextStyle style = TextStyle(
-        fontStyle: FontStyle.italic, fontWeight: FontWeight.w400, fontSize: 13);
+        fontStyle: FontStyle.italic, fontWeight: FontWeight.w400, fontSize: 9.6);
     return Text(
       "Ilustrador: $illustratorName",
       style: style,
@@ -358,12 +445,11 @@ class _SettingsPageState extends State<SettingsPage> {
         color: utils.darkAndLightThemeColor(_isDarkTheme),
         image: DecorationImage(image: avatarImage, fit: BoxFit.contain),
         shape: BoxShape.circle,
-        border: Border.all(
-            width: 4.0,
-            color: utils.factionColor(avatar.faction)));
+        border:
+            Border.all(width: 4.0, color: utils.factionColor(avatar.faction)));
   }
 
-  _radioAvatar({bool isPlayerOne, index}) {
+  Radio _radioAvatar({bool isPlayerOne, index}) {
     Color color = isPlayerOne ? Colors.blue : Colors.red;
 
     return Radio(
@@ -376,7 +462,7 @@ class _SettingsPageState extends State<SettingsPage> {
         });
   }
 
-  _explanatoryRadio({bool isPlayerOne}) {
+  RadioListTile _explanatoryRadio({bool isPlayerOne}) {
     Color color = isPlayerOne ? Colors.blue : Colors.red;
     return RadioListTile(
       title: Text("Color de Jugador ${isPlayerOne ? 1 : 2}"),
@@ -402,7 +488,27 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
-  _footer() {
+  // Widget _saveButton(BuildContext context) {
+  //   return Center(
+  //     child: RaisedButton(
+  //         color: utils.mainThemeColor(
+  //             prefs.isDarkTheme, Factions.values[prefs.faction]),
+  //         child: Padding(
+  //           //EdgeInsets.symetric para distintos valores UwU
+  //           padding: EdgeInsets.all(12.0),
+  //           child: Text(
+  //             "Guardar",
+  //             style: TextStyle(fontSize: 18.0),
+  //           ),
+  //         ),
+  //         onPressed: () {
+  //           Navigator.pop(context);
+  //         },
+  //         shape: StadiumBorder()),
+  //   );
+  // }
+
+  Column _footer() {
     return Column(
       children: <Widget>[
         Divider(),
@@ -423,61 +529,6 @@ class _SettingsPageState extends State<SettingsPage> {
             width: 10,
           )
         ])),
-      ],
-    );
-  }
-
-  _selectAnimationSpeed() {
-    return Column(
-      children: <Widget>[
-        Text(
-          "Este cambio se producirá al iniciar un nuevo juego.",
-          style: TextStyle(
-              fontSize: 13.0,
-              fontStyle: FontStyle.italic,
-              fontWeight: FontWeight.w300),
-        ),
-        Slider.adaptive(
-          min: -2000,
-          max: -400,
-          value: _animationSpeed.toDouble(),
-          divisions: 4,
-          onChanged: ((value) => setState(() {
-                _animationSpeed = value.toInt();
-                prefs.animationSpeed = (_animationSpeed * -1);
-              })),
-          label: utils.speedValue(prefs.animationSpeed),
-          //divisions: 10,
-        ),
-      ],
-    );
-  }
-
-  Widget _saveButton(BuildContext context) {
-    return Center(
-      child: RaisedButton(
-          color: utils.mainThemeColor(
-              prefs.isDarkTheme, Factions.values[prefs.faction]),
-          child: Padding(
-            //EdgeInsets.symetric para distintos valores UwU
-            padding: EdgeInsets.all(12.0),
-            child: Text(
-              "Guardar",
-              style: TextStyle(fontSize: 18.0),
-            ),
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          shape: StadiumBorder()),
-    );
-  }
-
-  _explainAvatarSelect() {
-    return Wrap(
-      children: <Widget>[
-        _explanatoryRadio(isPlayerOne: true),
-        _explanatoryRadio(isPlayerOne: false)
       ],
     );
   }

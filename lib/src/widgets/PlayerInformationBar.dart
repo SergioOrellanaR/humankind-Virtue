@@ -38,32 +38,39 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
   }
 
   _rowInformation() {
-    return _playerNumber == 1 ? _playerOneInformation() : _playerTwoInformation();
+    return _playerNumber == 1
+        ? _playerOneInformation()
+        : _playerTwoInformation();
   }
 
-  _playerOneInformation()
-  {
+  _playerOneInformation() {
     return Row(
       children: <Widget>[
         _expanded(),
         _willInformation(),
-        SizedBox(width: _screenSize.width * 0.08,),
+        SizedBox(
+          width: _screenSize.width * 0.08,
+        ),
         _structureInformation(),
-        SizedBox(width: _screenSize.width * 0.02,),
+        SizedBox(
+          width: _screenSize.width * 0.02,
+        ),
         _avatarImage(),
       ],
     );
-
   }
 
-  _playerTwoInformation()
-  {
+  _playerTwoInformation() {
     return Row(
       children: <Widget>[
         _avatarImage(),
-        SizedBox(width: _screenSize.width * 0.02,),
+        SizedBox(
+          width: _screenSize.width * 0.02,
+        ),
         _structureInformation(),
-        SizedBox(width: _screenSize.width * 0.08,),
+        SizedBox(
+          width: _screenSize.width * 0.08,
+        ),
         _willInformation(),
         _expanded()
       ],
@@ -72,23 +79,26 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
 
   Column _willInformation() {
     return Column(
-        children: <Widget>[
-          _willAndStructureInformation(isWill: true),
-          _updateButton()
-        ],
-      );
+      children: <Widget>[
+        _willAndStructureInformation(isWill: true),
+        _updateButton()
+      ],
+    );
   }
 
   Column _structureInformation() {
     return Column(
-        children: <Widget>[
-          _willAndStructureInformation(isWill: false),
-          _fakeIcon()
-        ],
-      );
+      children: <Widget>[
+        _willAndStructureInformation(isWill: false),
+        _fakeIcon()
+      ],
+    );
   }
 
-  Icon _fakeIcon() => Icon(Icons.lock_outline, color: Colors.transparent,);
+  Icon _fakeIcon() => Icon(
+        Icons.lock_outline,
+        color: Colors.transparent,
+      );
 
   Expanded _expanded() {
     return Expanded(
@@ -162,14 +172,14 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
           gradient: _counterGradient(isWill: isWill),
           border: Border.all(
               width: 2.0,
-              color: utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
+              color: utils.mainThemeColor(
+                  prefs.isDarkTheme, Factions.values[prefs.faction]),
               style: BorderStyle.solid),
           boxShadow: kElevationToShadow[12]),
     );
   }
 
   Text _valueToCounter({@required bool isWill}) {
-    
     String value = isWill
         ? "${_willPoints.toString()}/$_savedWill"
         : _structurePoints.toString();
@@ -177,11 +187,11 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
     TextStyle style =
         TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
 
-    if(isWill && value.length == 5)
-    {
-      style = TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 9.5);
+    if (isWill && value.length == 5) {
+      style = TextStyle(
+          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 9.5);
     }
-    
+
     return Text(value, style: style);
   }
 
@@ -213,34 +223,35 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
         child: Icon(Icons.lock_outline));
   }
 
-  Container _avatarImage() 
-  {
+  GestureDetector _avatarImage() {
     AssetImage avatarImage;
     Color borderColor;
-    if(_playerNumber == 1)
-    {
+    if (_playerNumber == 1) {
       avatarImage = AssetImage(utils.avatarsMap[prefs.playerOneAvatar].source);
-      borderColor = utils.factionColor(utils.avatarsMap[prefs.playerOneAvatar].faction);
-    }
-    else
-    {
+      borderColor =
+          utils.factionColor(utils.avatarsMap[prefs.playerOneAvatar].faction);
+    } else {
       avatarImage = AssetImage(utils.avatarsMap[prefs.playerTwoAvatar].source);
-      borderColor = utils.factionColor(utils.avatarsMap[prefs.playerTwoAvatar].faction);
+      borderColor =
+          utils.factionColor(utils.avatarsMap[prefs.playerTwoAvatar].faction);
     }
 
+    return GestureDetector(
+      onTap: (){
+        Navigator.pushNamed(context, "settings", arguments: 2);
+      },
+      child: _avatarContainer(borderColor, avatarImage),
+
+    );
+  }
+
+  Container _avatarContainer(Color borderColor, AssetImage avatarImage) {
     return Container(
-      width: _screenSize.width * 0.25,
-      height: _screenSize.width * 0.25,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.red,
-        border: Border.all(
-            width: 3.0,
-            color: borderColor),
-        image: DecorationImage(
-          image: avatarImage,
-          fit: BoxFit.contain)
-        )
-      );
+        width: _screenSize.width * 0.25,
+        height: _screenSize.width * 0.25,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(width: 3.0, color: borderColor),
+            image: DecorationImage(image: avatarImage, fit: BoxFit.contain)));
   }
 }
