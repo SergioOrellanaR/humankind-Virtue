@@ -231,8 +231,12 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: Colors.red,
+        border: Border.all(
+            width: 3.0,
+            color: utils.darkAndLightOppositeThemeColor(prefs.isDarkTheme)),
         image: DecorationImage(
-          image: avatarImage)
+          image: avatarImage,
+          fit: BoxFit.contain)
         )
       );
   }

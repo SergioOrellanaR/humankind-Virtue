@@ -9,7 +9,7 @@ import 'globals.dart' as globals;
 export 'globals.dart';
 
 final String appName = 'Humankind Virtue';
-final String version = '1.0.3';
+final String version = '1.0.4';
 final String leftTab = 'assets/tabs/leftTab.png';
 final String rightTab = 'assets/tabs/rightTab.png';
 

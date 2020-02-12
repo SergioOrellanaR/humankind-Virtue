@@ -2,6 +2,7 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:humankind/src/config/UserConfig.dart';
+import 'package:humankind/src/models/AvatarModel.dart';
 import 'package:humankind/utils/utils.dart' as utils;
 
 class SettingsPage extends StatefulWidget {
@@ -17,6 +18,8 @@ class _SettingsPageState extends State<SettingsPage> {
   int _animationSpeed;
   bool _isDarkTheme;
   Factions _faction;
+  int _playerOneAvatar;
+  int _playerTwoAvatar;
 
   TextEditingController _textEditingController;
   Size _screenSize;
@@ -32,6 +35,8 @@ class _SettingsPageState extends State<SettingsPage> {
     _animationSpeed = prefs.animationSpeed * -1;
     _isDarkTheme = prefs.isDarkTheme;
     _faction = Factions.values[prefs.faction];
+    _playerOneAvatar = prefs.playerOneAvatar;
+    _playerTwoAvatar = prefs.playerTwoAvatar;
   }
 
   @override
@@ -67,6 +72,9 @@ class _SettingsPageState extends State<SettingsPage> {
         _selectTheme(),
         _subTitle("Facción"),
         _selectFaction(),
+        _subTitle("Avatar"),
+        _explainAvatarSelect(),
+        _selectAvatar(),
         Divider(),
         _saveButton(context),
         _footer()
@@ -281,6 +289,112 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
+  _selectAvatar() {
+    return Wrap(
+        children: _avatarList(),
+        direction: Axis.horizontal,
+        spacing: 0,
+        runSpacing: _screenSize.height * 0.05,
+        alignment: WrapAlignment.spaceEvenly);
+  }
+
+  List<Widget> _avatarList() {
+    List<Widget> widgetList = new List<Widget>();
+
+    for (int i = 0; i < utils.avatarsMap.length; i++) {
+      widgetList.add(_avatarContainer(avatar: utils.avatarsMap[i], index: i));
+    }
+
+    return widgetList;
+  }
+
+  Widget _avatarContainer({Avatar avatar, int index}) {
+    return Container(
+        width: _screenSize.width * 0.5,
+        child: Column(children: <Widget>[
+          _avatarOptionContainer(avatar: avatar),
+          _illustratorText(avatar.illustrator),
+          Row(
+            children: <Widget>[
+              _radioAvatar(isPlayerOne: true, index: index),
+              _radioAvatar(isPlayerOne: false, index: index),
+            ],
+            mainAxisAlignment: MainAxisAlignment.center,
+          ),
+          Text(
+            avatar.name,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          )
+        ]));
+  }
+
+  Text _illustratorText(String illustratorName) {
+    TextStyle style = TextStyle(
+        fontStyle: FontStyle.italic, fontWeight: FontWeight.w400, fontSize: 13);
+    return Text(
+      "Ilustrador: $illustratorName",
+      style: style,
+    );
+  }
+
+  Container _avatarOptionContainer({Avatar avatar}) {
+    return Container(
+        height: _screenSize.height * 0.15,
+        width: _screenSize.height * 0.15,
+        decoration: _avatarBoxDecoration(avatar: avatar));
+  }
+
+  BoxDecoration _avatarBoxDecoration({Avatar avatar}) {
+    AssetImage avatarImage = AssetImage(avatar.source);
+    return BoxDecoration(
+        color: utils.darkAndLightThemeColor(_isDarkTheme),
+        image: DecorationImage(image: avatarImage, fit: BoxFit.contain),
+        shape: BoxShape.circle,
+        border: Border.all(
+            width: 3.0,
+            color: utils.darkAndLightOppositeThemeColor(_isDarkTheme)));
+  }
+
+  _radioAvatar({bool isPlayerOne, index}) {
+    Color color = isPlayerOne ? Colors.blue : Colors.red;
+
+    return Radio(
+        value: index,
+        groupValue: isPlayerOne ? _playerOneAvatar : _playerTwoAvatar,
+        activeColor: color,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        onChanged: (value) {
+          _setSelectedAvatarOption(value: value, isPlayerOne: isPlayerOne);
+        });
+  }
+
+  _explanatoryRadio({bool isPlayerOne}) {
+    Color color = isPlayerOne ? Colors.blue : Colors.red;
+
+    return RadioListTile(
+      title: Text("Color de Jugador ${isPlayerOne ? 1 : 2}"),
+      subtitle: Text("Botón a la ${isPlayerOne ? "izquierda" : "derecha"}"),
+      value: 1,
+      groupValue: 1,
+      onChanged: (val) {},
+      activeColor: color,
+      selected: true,
+      controlAffinity: ListTileControlAffinity.trailing,
+    );
+  }
+
+  void _setSelectedAvatarOption({int value, bool isPlayerOne}) {
+    setState(() {
+      if (isPlayerOne) {
+        _playerOneAvatar = value;
+        prefs.playerOneAvatar = value;
+      } else {
+        _playerTwoAvatar = value;
+        prefs.playerTwoAvatar = value;
+      }
+    });
+  }
+
   _footer() {
     return Column(
       children: <Widget>[
@@ -349,6 +463,15 @@ class _SettingsPageState extends State<SettingsPage> {
             Navigator.pop(context);
           },
           shape: StadiumBorder()),
+    );
+  }
+
+  _explainAvatarSelect() {
+    return Wrap(
+      children: <Widget>[
+        _explanatoryRadio(isPlayerOne: true),
+        _explanatoryRadio(isPlayerOne: false)
+      ],
     );
   }
 }

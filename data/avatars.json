@@ -3,7 +3,7 @@
         "gender": "Femenino",
         "faction": "4",
         "name": "Adriana San Patricio",
-        "source": "assets/avatars/Adriana San Patricio.png"
+        "source": "assets/avatars/AdrianaSanPatricio.png"
     },
     {
         "illustrator": "Sergio Lantadilla",
@@ -17,7 +17,14 @@
         "gender": "Femenino",
         "faction": "4",
         "name": "Karina Silverbullet",
-        "source": "assets/avatars/Karina Silverbullet.png"
+        "source": "assets/avatars/KarinaSilverbullet.png"
+    },
+    {
+        "illustrator": "Mauricio Herrera",
+        "gender": "Masculino",
+        "faction": "4",
+        "name": "Antoine Silverbullet",
+        "source": "assets/avatars/AntoineSilverbullet.png"
     },
     {
         "illustrator": "Genzo",
@@ -25,13 +32,6 @@
         "faction": "2",
         "name": "Anita",
         "source": "assets/avatars/Anita.png"
-    },
-    {
-        "illustrator": "Mauricio Herrera",
-        "gender": "Masculino",
-        "faction": "4",
-        "name": "Antoine Silverbullet",
-        "source": "assets/avatars/Antoine Silverbullet.png"
     },
     {
         "illustrator": "Sergio Lantadilla",
@@ -52,7 +52,7 @@
         "gender": "Masculino",
         "faction": "1",
         "name": "Petrov Ivanovich",
-        "source": "assets/avatars/Petrov Ivanovich.png"
+        "source": "assets/avatars/PetrovIvanovich.png"
     },
     {
         "illustrator": "Sergio Lantadilla",
@@ -73,6 +73,6 @@
         "gender": "Femenino",
         "faction": "2",
         "name": "Vanessa Lanthier",
-        "source": "assets/avatars/Vanessa Lanthier.png"
+        "source": "assets/avatars/VanessaLanthier.png"
     }
 ]

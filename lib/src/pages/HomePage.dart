@@ -30,38 +30,49 @@ class _HomePageState extends State<HomePage> {
     _screenSize = MediaQuery.of(context).size;
     _lockOrientationToPortrait();
     return SafeArea(
-          child: Scaffold(
-        body: Stack(
-          children: <Widget>[_background(), _body()],
-        ),
-        floatingActionButton: _actionButtons(context)
-      ),
+      child: Scaffold(
+          body: Stack(
+            children: <Widget>[_background(), _body()],
+          ),
+          floatingActionButton: _actionButtons(context)),
     );
   }
 
   Row _actionButtons(BuildContext context) {
     return Row(
       children: <Widget>[
-        SizedBox(width: _screenSize.width * 0.07,),
-        _settingsButton(context),
+        SizedBox(width: _screenSize.width*0.06,),
+        Column(
+          children: <Widget>[
+            _restartButton(),
+            SizedBox(height: _screenSize.height*0.03,),
+            _settingsButton(context),
+          ],
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+        ),
       ],
-      mainAxisAlignment: MainAxisAlignment.start,
     );
   }
 
   SizedBox _settingsButton(BuildContext context) {
     return SizedBox(
-        width: _screenSize.width * 0.11,
-        height: _screenSize.width * 0.11,
-                child: FloatingActionButton(
-          child: Icon(Icons.settings, color: utils.oppositeThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),),
-          backgroundColor: utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
-          onPressed: () {
-            Navigator.pushNamed(context, "settings");
-          },
-          heroTag: "settingsButton",
+      width: _screenSize.width * 0.11,
+      height: _screenSize.width * 0.11,
+      child: FloatingActionButton(
+        child: Icon(
+          Icons.settings,
+          color: utils.oppositeThemeColor(
+              prefs.isDarkTheme, Factions.values[prefs.faction]),
         ),
-      );
+        backgroundColor: utils.mainThemeColor(
+            prefs.isDarkTheme, Factions.values[prefs.faction]),
+        onPressed: () {
+          Navigator.pushNamed(context, "settings");
+        },
+        heroTag: "settingsButton",
+      ),
+    );
   }
 
   _body() {
@@ -84,10 +95,9 @@ class _HomePageState extends State<HomePage> {
 
   _background() {
     if (prefs.faction != Factions.ninguno.index) {
-      return Stack(children: <Widget>[
-        _centerBackgroundImage(),
-        _factionCornerImage()
-      ],);
+      return Stack(
+        children: <Widget>[_centerBackgroundImage(), _factionCornerImage()],
+      );
     } else {
       return Container();
     }
@@ -114,12 +124,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _restartButton() {
-    return RaisedButton(
-        child: Padding(
-          //EdgeInsets.symetric para distintos valores UwU
-          padding: EdgeInsets.all(0.0),
-          child: _restartButtonText(),
-        ),
+    return SizedBox(
+      width: _screenSize.width * 0.11,
+      height: _screenSize.width * 0.11,
+      child: FloatingActionButton(
+        heroTag: "restartButton",
+        tooltip: "Reinicia la partida actual",
+        child: Icon(Icons.fiber_new,
+            color: utils.oppositeThemeColor(
+                prefs.isDarkTheme, Factions.values[prefs.faction])),
+        backgroundColor: utils.mainThemeColor(
+            prefs.isDarkTheme, Factions.values[prefs.faction]),
         onPressed: () {
           // Navigator.pushReplacementNamed(context, "home");
           Navigator.push(
@@ -132,18 +147,39 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         },
-        color: utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
-        shape: StadiumBorder());
+      ),
+    );
+    // return RaisedButton(
+    //     child: Padding(
+    //       //EdgeInsets.symetric para distintos valores UwU
+    //       padding: EdgeInsets.all(0.0),
+    //       child: _restartButtonText(),
+    //     ),
+    //     onPressed: () {
+    //       // Navigator.pushReplacementNamed(context, "home");
+    //       Navigator.push(
+    //         context,
+    //         PageRouteBuilder(
+    //           pageBuilder: (context, anim1, anim2) => HomePage(),
+    //           transitionsBuilder: (context, anim1, anim2, child) =>
+    //               FadeTransition(opacity: anim1, child: child),
+    //           transitionDuration: Duration(seconds: 1),
+    //         ),
+    //       );
+    //     },
+    //     color: utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
+    //     shape: StadiumBorder());
   }
 
   Text _restartButtonText() {
     return Text(
-          "Reiniciar juego",
-          style: TextStyle(
-              fontSize: 16.0,
-              color: utils.oppositeThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
-              fontWeight: FontWeight.bold),
-        );
+      "Reiniciar juego",
+      style: TextStyle(
+          fontSize: 16.0,
+          color: utils.oppositeThemeColor(
+              prefs.isDarkTheme, Factions.values[prefs.faction]),
+          fontWeight: FontWeight.bold),
+    );
   }
 
   Center _centerBackgroundImage() {
@@ -159,19 +195,17 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _factionCornerImage() 
-  {
+  _factionCornerImage() {
     return Positioned(
       top: 4.0,
       right: 4.0,
-          child: Container(
+      child: Container(
         width: _screenSize.height * 0.1,
         height: _screenSize.height * 0.1,
         decoration: BoxDecoration(
-          image: DecorationImage(
-                  image: utils.factionImage(Factions.values[prefs.faction]),
-                  fit: BoxFit.fill)
-        ),
+            image: DecorationImage(
+                image: utils.factionImage(Factions.values[prefs.faction]),
+                fit: BoxFit.fill)),
       ),
     );
   }
