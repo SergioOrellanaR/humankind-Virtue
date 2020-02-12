@@ -71,6 +71,7 @@ class _HomePageState extends State<HomePage> {
           Navigator.pushNamed(context, "settings");
         },
         heroTag: "settingsButton",
+        tooltip: "Ajustes",
       ),
     );
   }
