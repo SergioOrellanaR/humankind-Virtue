@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 
 final String appName = 'Humankind Virtue';
-final String version = '1.0.0';
+final String version = '1.0.3';
 final String leftTab = 'assets/tabs/leftTab.png';
 final String rightTab ='assets/tabs/rightTab.png';
 
@@ -127,6 +127,11 @@ Icon iconVirtueValue(String value, Color color)
 {
   IconData iconData;
 
+  if(color == Colors.white)
+  {
+    color = Colors.black;
+  }
+
   switch(value)
   {
     case "-2":
@@ -145,7 +150,6 @@ Icon iconVirtueValue(String value, Color color)
       iconData = Icons.exposure_plus_2;
       break;
   }
-
   return Icon(iconData, color: color);
 }
 

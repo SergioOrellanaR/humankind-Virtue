@@ -384,8 +384,13 @@ class _VirtueCardState extends State<VirtueCard>
     IconData iconData = _playerValue == 1
         ? Icons.keyboard_arrow_right
         : Icons.keyboard_arrow_left;
+
+    Color color = utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]);
+
+    color = color == Colors.white ? Colors.black : color;
+
     return GestureDetector(
-      child: Icon(iconData, size: _screenSize.width * 0.13, color: utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),),
+      child: Icon(iconData, size: _screenSize.width * 0.13, color: color),
       onTap: () {
         if (_playerValue == 1) {
           widget.pageViewController.nextPage(

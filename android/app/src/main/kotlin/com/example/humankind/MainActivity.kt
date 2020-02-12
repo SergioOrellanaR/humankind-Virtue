@@ -1,4 +1,4 @@
-package com.example.humankind
+package com.serorellanar.humankindvirtue
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

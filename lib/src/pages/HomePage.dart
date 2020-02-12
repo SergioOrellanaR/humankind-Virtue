@@ -42,10 +42,21 @@ class _HomePageState extends State<HomePage> {
   Row _actionButtons(BuildContext context) {
     return Row(
       children: <Widget>[
+        _settingsButton(context),
+        _restartButton(),
         SizedBox(
-          width: _screenSize.width * 0.08,
+          width: _screenSize.width * 0.02,
         ),
-        FloatingActionButton(
+      ],
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+    );
+  }
+
+  SizedBox _settingsButton(BuildContext context) {
+    return SizedBox(
+        width: _screenSize.width * 0.11,
+        height: _screenSize.width * 0.11,
+                child: FloatingActionButton(
           child: Icon(Icons.settings, color: utils.oppositeThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),),
           backgroundColor: utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
           onPressed: () {
@@ -53,13 +64,7 @@ class _HomePageState extends State<HomePage> {
           },
           heroTag: "settingsButton",
         ),
-        SizedBox(
-          width: _screenSize.width * 0.1,
-        ),
-        _restartButton(),
-      ],
-      mainAxisAlignment: MainAxisAlignment.start,
-    );
+      );
   }
 
   _body() {
@@ -115,7 +120,7 @@ class _HomePageState extends State<HomePage> {
     return RaisedButton(
         child: Padding(
           //EdgeInsets.symetric para distintos valores UwU
-          padding: EdgeInsets.all(12.0),
+          padding: EdgeInsets.all(0.0),
           child: _restartButtonText(),
         ),
         onPressed: () {
@@ -138,7 +143,7 @@ class _HomePageState extends State<HomePage> {
     return Text(
           "Reiniciar juego",
           style: TextStyle(
-              fontSize: 18.0,
+              fontSize: 16.0,
               color: utils.oppositeThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
               fontWeight: FontWeight.bold),
         );
