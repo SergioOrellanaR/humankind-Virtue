@@ -250,8 +250,8 @@ class _SettingsPageState extends State<SettingsPage> {
               fontWeight: FontWeight.w300),
         ),
         Slider.adaptive(
-          min: -2000,
-          max: -400,
+          min: -1500,
+          max: -300,
           value: _animationSpeed.toDouble(),
           divisions: 4,
           onChanged: ((value) => setState(() {

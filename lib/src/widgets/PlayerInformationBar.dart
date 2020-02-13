@@ -49,7 +49,7 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
         _expanded(),
         _willInformation(),
         SizedBox(
-          width: _screenSize.width * 0.08,
+          width: _screenSize.width * 0.058,
         ),
         _structureInformation(),
         SizedBox(
@@ -57,6 +57,7 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
         ),
         _avatarImage(),
       ],
+      crossAxisAlignment: CrossAxisAlignment.end,
     );
   }
 
@@ -69,7 +70,7 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
         ),
         _structureInformation(),
         SizedBox(
-          width: _screenSize.width * 0.08,
+          width: _screenSize.width * 0.058,
         ),
         _willInformation(),
         _expanded()
@@ -80,6 +81,7 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
   Column _willInformation() {
     return Column(
       children: <Widget>[
+        _refillWillIcon(),
         _willAndStructureInformation(isWill: true),
         _updateButton()
       ],
@@ -89,6 +91,7 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
   Column _structureInformation() {
     return Column(
       children: <Widget>[
+        _fakeIcon(),
         _willAndStructureInformation(isWill: false),
         _fakeIcon()
       ],
@@ -161,21 +164,30 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
     _loopActiveOnOperation = false;
   }
 
-  _pointsContainer({@required bool isWill}) {
-    return Container(
-      width: _screenSize.width * 0.09,
-      height: _screenSize.width * 0.09,
-      child: _valueToCounter(isWill: isWill),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: _counterGradient(isWill: isWill),
-          border: Border.all(
-              width: 2.0,
-              color: utils.mainThemeColor(
-                  prefs.isDarkTheme, Factions.values[prefs.faction]),
-              style: BorderStyle.solid),
-          boxShadow: kElevationToShadow[12]),
+  GestureDetector _pointsContainer({@required bool isWill}) {
+    return GestureDetector(
+      onTap: () {
+        if (isWill) {
+          setState(() {
+            _willPoints = _savedWill;
+          });
+        }
+      },
+      child: Container(
+        width: _screenSize.width * 0.12,
+        height: _screenSize.width * 0.12,
+        child: _valueToCounter(isWill: isWill),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: _counterGradient(isWill: isWill),
+            border: Border.all(
+                width: 2.0,
+                color: utils.mainThemeColor(
+                    prefs.isDarkTheme, Factions.values[prefs.faction]),
+                style: BorderStyle.solid),
+            boxShadow: kElevationToShadow[12]),
+      ),
     );
   }
 
@@ -187,9 +199,9 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
     TextStyle style =
         TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
 
-    if (isWill && value.length == 5) {
+    if (isWill && value.length >= 4) {
       style = TextStyle(
-          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 9.5);
+          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11);
     }
 
     return Text(value, style: style);
@@ -213,7 +225,7 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
     ], begin: Alignment.topRight, end: Alignment.bottomLeft);
   }
 
-  _updateButton() {
+  GestureDetector _updateButton() {
     return GestureDetector(
         onTap: () {
           setState(() {
@@ -223,35 +235,59 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
         child: Icon(Icons.lock_outline));
   }
 
-  GestureDetector _avatarImage() {
+  Column _avatarImage() {
     AssetImage avatarImage;
     Color borderColor;
+    String text;
     if (_playerNumber == 1) {
       avatarImage = AssetImage(utils.avatarsMap[prefs.playerOneAvatar].source);
       borderColor =
           utils.factionColor(utils.avatarsMap[prefs.playerOneAvatar].faction);
+      text = prefs.playerOne;
     } else {
       avatarImage = AssetImage(utils.avatarsMap[prefs.playerTwoAvatar].source);
       borderColor =
           utils.factionColor(utils.avatarsMap[prefs.playerTwoAvatar].faction);
+      text = prefs.playerTwo;
     }
 
-    return GestureDetector(
-      onTap: (){
-        Navigator.pushNamed(context, "settings", arguments: 2);
-      },
-      child: _avatarContainer(borderColor, avatarImage),
-
+    return Column(
+      children: <Widget>[
+        GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, "settings", arguments: 2);
+          },
+          child: _avatarContainer(borderColor, avatarImage),
+        ),
+        Text(
+          text,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        )
+      ],
     );
   }
 
   Container _avatarContainer(Color borderColor, AssetImage avatarImage) {
     return Container(
-        width: _screenSize.width * 0.25,
-        height: _screenSize.width * 0.25,
+        width: _screenSize.width * 0.245,
+        height: _screenSize.width * 0.245,
         decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(width: 3.0, color: borderColor),
+            border: Border.all(width: 1.0, color: borderColor),
             image: DecorationImage(image: avatarImage, fit: BoxFit.contain)));
+  }
+
+  _refillWill()
+  {
+    setState(() {
+            _willPoints = _savedWill;
+          });
+  }
+
+  _refillWillIcon() 
+  {
+    return GestureDetector(
+      onTap: _refillWill,
+      child: Icon(Icons.undo),);
   }
 }

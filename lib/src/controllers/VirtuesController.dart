@@ -1,6 +1,5 @@
 import 'package:humankind/src/models/AbstractVirtue.dart';
 
-
 class VirtuesController {
   List<AbstractVirtue> factions;
   List<AbstractVirtue> virtuesValues;
@@ -8,7 +7,7 @@ class VirtuesController {
   VirtuesController() {
     _initializeFactions();
     _initializeVirtuesValues();
-    _shuffle();
+    shuffleAll();
   }
 
   _initializeFactions() {
@@ -28,16 +27,18 @@ class VirtuesController {
     }
   }
 
-  _shuffle() {
+  shuffleFactions() {
+    _initializeFactions();
     factions.shuffle();
+  }
+
+  shuffleVirtues() {
+    _initializeVirtuesValues();
     virtuesValues.shuffle();
   }
 
-  reshuffle() {
-    _initializeFactions();
-    _initializeVirtuesValues();
-    _shuffle();
+  shuffleAll() {
+    shuffleFactions();
+    shuffleVirtues();
   }
 }
-
-

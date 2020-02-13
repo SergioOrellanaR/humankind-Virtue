@@ -9,7 +9,7 @@ import 'globals.dart' as globals;
 export 'globals.dart';
 
 final String appName = 'Humankind Virtue';
-final String version = '1.0.4';
+final String version = '1.1.0';
 final String leftTab = 'assets/tabs/leftTab.png';
 final String rightTab = 'assets/tabs/rightTab.png';
 
@@ -97,19 +97,19 @@ String speedValue(int value) {
   String text;
 
   switch (value) {
-    case 400:
+    case 300:
       text = "Muy rápido";
       break;
-    case 800:
+    case 600:
       text = "Rápido";
       break;
-    case 1200:
+    case 900:
       text = "Normal";
       break;
-    case 1600:
+    case 1200:
       text = "Lento";
       break;
-    case 2000:
+    case 1500:
       text = "Muy lento";
       break;
   }

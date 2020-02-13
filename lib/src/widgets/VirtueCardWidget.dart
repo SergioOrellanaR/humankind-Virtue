@@ -18,7 +18,6 @@ class VirtueCard extends StatefulWidget {
 
 class _VirtueCardState extends State<VirtueCard>
     with SingleTickerProviderStateMixin {
-
   Size _screenSize;
   String _cardImageUrl;
   VirtuesController _virtuesController;
@@ -54,30 +53,29 @@ class _VirtueCardState extends State<VirtueCard>
     return _mainScreen();
   }
 
-  void _initializeOffSetAnimation()
-  {
+  void _initializeOffSetAnimation() {
     _offsetAnimation = _setOffsetAnimation().animate(_animationConfig());
   }
 
   CurvedAnimation _animationConfig() {
     return CurvedAnimation(
-    parent: _controller,
-    curve: Curves.easeInExpo,
-  );
+      parent: _controller,
+      curve: Curves.easeInExpo,
+    );
   }
 
   Tween<Offset> _setOffsetAnimation() {
     return Tween<Offset>(
-    begin: Offset.zero,
-    end: const Offset(1.5, 0.0),
-  );
+      begin: Offset.zero,
+      end: const Offset(1.5, 0.0),
+    );
   }
 
   void _initializeController() {
     _controller = AnimationController(
-    duration: Duration(milliseconds: _animationSpeed),
-    vsync: this,
-  );
+      duration: Duration(milliseconds: _animationSpeed),
+      vsync: this,
+    );
   }
 
   Row _mainScreen() {
@@ -138,12 +136,24 @@ class _VirtueCardState extends State<VirtueCard>
             _virtuesController.virtuesValues[3]),
         _stackedVirtueAndSpace(_virtuesController.factions[4],
             _virtuesController.virtuesValues[4]),
-        _reRoll(),
+        _rollRow(),
         SizedBox(
           height: _screenSize.height * 0.02,
         ),
       ],
       mainAxisAlignment: MainAxisAlignment.center,
+    );
+  }
+
+  Row _rollRow() {
+    return Row(
+      children: <Widget>[
+        _reRoll(rollFactions: true),
+        SizedBox(
+          width: _screenSize.width * 0.2,
+        ),
+        _reRoll(rollFactions: false)
+      ],
     );
   }
 
@@ -180,7 +190,8 @@ class _VirtueCardState extends State<VirtueCard>
   Row _virtueLine(Faction faction, Virtue virtue) {
     return Row(children: <Widget>[
       SizedBox(width: _screenSize.width * 0.08),
-      _virtueSpace(_leftContainerDecoration(), faction.toString(), virtue: faction),
+      _virtueSpace(_leftContainerDecoration(), faction.toString(),
+          virtue: faction),
       SizedBox(
         width: 0.3,
       ),
@@ -228,24 +239,22 @@ class _VirtueCardState extends State<VirtueCard>
     ], mainAxisAlignment: MainAxisAlignment.center);
   }
 
-  GestureDetector _abstractConcealingWidget({@required AbstractVirtue abstractVirtue}) 
-  {
-    if(abstractVirtue is Faction)
-    {
+  GestureDetector _abstractConcealingWidget(
+      {@required AbstractVirtue abstractVirtue}) {
+    if (abstractVirtue is Faction) {
+      return _virtueSpace(_leftContainerDecoration(imageUrl: utils.leftTab), "",
+          virtue: abstractVirtue);
+    } else {
       return _virtueSpace(
-      _leftContainerDecoration(imageUrl: utils.leftTab), "",
-      virtue: abstractVirtue);
-    }
-    else
-    {
-      return _virtueSpace(
-        _rightContainerDecoration(imageUrl: utils.rightTab), "",
-        virtue: abstractVirtue);
+          _rightContainerDecoration(imageUrl: utils.rightTab), "",
+          virtue: abstractVirtue);
     }
   }
 
-  SlideTransition _slideTransition(Widget abstractVirtueWidget, {@required bool isFaction}) {
-    TextDirection textDirection = isFaction ? TextDirection.rtl : TextDirection.ltr;
+  SlideTransition _slideTransition(Widget abstractVirtueWidget,
+      {@required bool isFaction}) {
+    TextDirection textDirection =
+        isFaction ? TextDirection.rtl : TextDirection.ltr;
 
     return SlideTransition(
         position: _offsetAnimation,
@@ -253,9 +262,8 @@ class _VirtueCardState extends State<VirtueCard>
         child: abstractVirtueWidget);
   }
 
-  _doesntNeedAnimation(AbstractVirtue virtue)
-  {
-    return((!virtue.isVisible && virtue.wasAlreadyAnimated) ||
+  _doesntNeedAnimation(AbstractVirtue virtue) {
+    return ((!virtue.isVisible && virtue.wasAlreadyAnimated) ||
         (virtue.isVisible && virtue.wasAlreadyAnimated));
   }
 
@@ -286,8 +294,7 @@ class _VirtueCardState extends State<VirtueCard>
         updateVirtueVisibility(virtue);
       },
       child: Container(
-          child: Center(
-              child: _tabContent(value, virtue: virtue)),
+          child: Center(child: _tabContent(value, virtue: virtue)),
           decoration: decoration,
           width: _screenSize.width * 0.247,
           height: _screenSize.height * 0.06),
@@ -295,33 +302,30 @@ class _VirtueCardState extends State<VirtueCard>
   }
 
   Widget _tabContent(String value, {AbstractVirtue virtue}) {
-    if(value != "")
-    {
-      if(virtue is Faction)
-      {
-        return Image(image: utils.factionImage(virtue.faction), fit: BoxFit.scaleDown);
+    if (value != "") {
+      if (virtue is Faction) {
+        return Image(
+            image: utils.factionImage(virtue.faction), fit: BoxFit.scaleDown);
+      } else {
+        return utils.iconVirtueValue(
+            virtue.value,
+            utils.mainThemeColor(
+                prefs.isDarkTheme, Factions.values[prefs.faction]));
       }
-      else
-      {
-        return utils.iconVirtueValue(virtue.value, utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]));
-      }
-      
-    }
-    else
-    {
+    } else {
       return Text(
-          value,
-          style: TextStyle(color: Colors.black),
-        );
+        value,
+        style: TextStyle(color: Colors.black),
+      );
     }
   }
 
   void updateVirtueVisibility(AbstractVirtue virtue) {
     return setState(() {
-        if (virtue != null) {
-          virtue.isVisible = true;
-        }
-      });
+      if (virtue != null) {
+        virtue.isVisible = true;
+      }
+    });
   }
 
   BoxDecoration _leftContainerDecoration({String imageUrl}) {
@@ -361,18 +365,24 @@ class _VirtueCardState extends State<VirtueCard>
         image: image);
   }
 
-  _reRoll() {
+  _reRoll({@required bool rollFactions}) {
     return SizedBox(
       width: _screenSize.height * 0.05,
       height: _screenSize.height * 0.05,
-          child: FloatingActionButton(
-        child: Icon(Icons.refresh, size: 20.0, color: utils.oppositeThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),),
-        backgroundColor: utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]),
-        heroTag: "card$_playerValue",
+      child: FloatingActionButton(
+        child: Icon(
+          Icons.refresh,
+          size: 20.0,
+          color: utils.oppositeThemeColor(
+              prefs.isDarkTheme, Factions.values[prefs.faction]),
+        ),
+        backgroundColor: utils.mainThemeColor(
+            prefs.isDarkTheme, Factions.values[prefs.faction]),
+        heroTag: "card$_playerValue+_$rollFactions",
         elevation: 3.0,
         onPressed: () {
           setState(() {
-            widget.player.virtuesController.reshuffle();
+            rollFactions ? widget.player.virtuesController.shuffleFactions(): widget.player.virtuesController.shuffleVirtues();
             _virtuesController = widget.player.virtuesController;
           });
         },
@@ -385,7 +395,8 @@ class _VirtueCardState extends State<VirtueCard>
         ? Icons.keyboard_arrow_right
         : Icons.keyboard_arrow_left;
 
-    Color color = utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]);
+    Color color =
+        utils.mainThemeColor(prefs.isDarkTheme, Factions.values[prefs.faction]);
 
     color = color == Colors.white ? Colors.black : color;
 
@@ -406,6 +417,4 @@ class _VirtueCardState extends State<VirtueCard>
       },
     );
   }
-
-  
 }
