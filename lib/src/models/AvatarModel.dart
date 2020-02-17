@@ -23,18 +23,24 @@ class Avatar {
     this.source,
   });
 
-  factory Avatar.fromJson(Map<String, dynamic> json) => Avatar(
+  factory Avatar.fromJson(Map<String, dynamic> json) {
+
+    int factionValue = json["faction"];
+    
+    
+    return Avatar(
         illustrator: json["illustrator"],
         gender: genderValues.map[json["gender"]],
-        faction: factionsValues.map[json["faction"]],
+        faction: Factions.values[factionValue],
         name: json["name"],
         source: json["source"],
       );
+  }
 
   Map<String, dynamic> toJson() => {
         "illustrator": illustrator,
         "gender": genderValues.reverse[gender],
-        "faction": factionsValues.reverse[faction],
+        "faction": faction.index,
         "name": name,
         "source": source,
       };

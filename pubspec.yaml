@@ -20,6 +20,7 @@ dependencies:
   dynamic_theme: ^1.0.1
   shared_preferences: ^0.5.6+1
   basic_utils: ^1.2.0
+  in_app_purchase: ^0.3.1
   flutter:
     sdk: flutter
 

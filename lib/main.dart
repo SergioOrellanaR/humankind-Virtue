@@ -4,10 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:humankind/src/config/UserConfig.dart';
 import 'package:humankind/utils/utils.dart' as utils;
 import 'package:humankind/utils/routes.dart' as routes;
+import 'package:in_app_purchase/in_app_purchase.dart';
 
 void main() async
 {
   WidgetsFlutterBinding.ensureInitialized();
+  //InAppPurchaseConnection.enablePendingPurchases();
   final prefs = new UserConfig();
   await prefs.initPrefs();
   await utils.loadAvatars();
@@ -39,3 +41,4 @@ class MyApp extends StatelessWidget {
     );    
   }
 }
+

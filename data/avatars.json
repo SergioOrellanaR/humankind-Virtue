@@ -1,77 +1,77 @@
 [{
         "illustrator": "Genzo",
         "gender": "Femenino",
-        "faction": "4",
+        "faction": 4,
         "name": "Adriana San Patricio",
         "source": "assets/avatars/AdrianaSanPatricio.png"
     },
     {
         "illustrator": "Sergio Lantadilla",
         "gender": "Masculino",
-        "faction": "4",
+        "faction": 4,
         "name": "Avatar",
         "source": "assets/avatars/Avatar.png"
     },
     {
         "illustrator": "Mauricio Herrera",
         "gender": "Femenino",
-        "faction": "4",
+        "faction": 4,
         "name": "Karina Silverbullet",
         "source": "assets/avatars/KarinaSilverbullet.png"
     },
     {
         "illustrator": "Mauricio Herrera",
         "gender": "Masculino",
-        "faction": "4",
+        "faction": 4,
         "name": "Antoine Silverbullet",
         "source": "assets/avatars/AntoineSilverbullet.png"
     },
     {
         "illustrator": "Genzo",
         "gender": "Femenino",
-        "faction": "2",
+        "faction": 2,
         "name": "Anita",
         "source": "assets/avatars/Anita.png"
     },
     {
         "illustrator": "Sergio Lantadilla",
         "gender": "Masculino",
-        "faction": "2",
+        "faction": 2,
         "name": "Eric",
         "source": "assets/avatars/Eric.png"
     },
     {
         "illustrator": "Mauricio Herrera",
         "gender": "Femenino",
-        "faction": "2",
+        "faction": 2,
         "name": "Latex",
         "source": "assets/avatars/Latex.png"
     },
     {
         "illustrator": "Sergio Lantadilla",
         "gender": "Masculino",
-        "faction": "1",
+        "faction": 1,
         "name": "Petrov Ivanovich",
         "source": "assets/avatars/PetrovIvanovich.png"
     },
     {
         "illustrator": "Sergio Lantadilla",
         "gender": "Masculino",
-        "faction": "3",
+        "faction": 3,
         "name": "Sombra",
         "source": "assets/avatars/Sombra.png"
     },
     {
         "illustrator": "Sergio Quijada",
         "gender": "Femenino",
-        "faction": "3",
+        "faction": 3,
         "name": "Tamara",
         "source": "assets/avatars/Tamara.png"
     },
     {
         "illustrator": "Cristián Gonzalez",
         "gender": "Femenino",
-        "faction": "2",
+        "faction": 2,
         "name": "Vanessa Lanthier",
         "source": "assets/avatars/VanessaLanthier.png"
     }
