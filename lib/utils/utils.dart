@@ -10,6 +10,7 @@ export 'globals.dart';
 
 final String appName = 'Humankind Virtue';
 final String version = '1.1.0';
+final bool allowAvatars = false;
 final String leftTab = 'assets/tabs/leftTab.png';
 final String rightTab = 'assets/tabs/rightTab.png';
 
@@ -33,16 +34,16 @@ Color factionColor(Factions faction) {
     case Factions.ninguno:
       color = Colors.transparent;
       break;
-    case Factions.abismales:
+    case Factions.green:
       color = Colors.green;
       break;
-    case Factions.quimera:
+    case Factions.blue:
       color = Colors.blue;
       break;
-    case Factions.acracia:
+    case Factions.yellow:
       color = Color.fromRGBO(180, 180, 60, 1.0);
       break;
-    case Factions.corporacion:
+    case Factions.red:
       color = Colors.red;
       break;
   }
@@ -55,16 +56,16 @@ Color oppositefactionColor(Factions faction) {
     case Factions.ninguno:
       color = Colors.transparent;
       break;
-    case Factions.abismales:
+    case Factions.green:
       color = Colors.red;
       break;
-    case Factions.quimera:
+    case Factions.blue:
       color = Colors.orange;
       break;
-    case Factions.acracia:
+    case Factions.yellow:
       color = Colors.deepPurple;
       break;
-    case Factions.corporacion:
+    case Factions.red:
       color = Colors.green;
       break;
   }
@@ -77,17 +78,39 @@ AssetImage factionImage(Factions faction) {
     case Factions.ninguno:
       image = null;
       break;
-    case Factions.abismales:
-      image = AssetImage("assets/factions/Abismales.png");
+    case Factions.green:
+      image = AssetImage("assets/factions/green.png");
       break;
-    case Factions.quimera:
-      image = AssetImage("assets/factions/Quimera.png");
+    case Factions.blue:
+      image = AssetImage("assets/factions/blue.png");
       break;
-    case Factions.acracia:
-      image = AssetImage("assets/factions/Acracia.png");
+    case Factions.yellow:
+      image = AssetImage("assets/factions/yellow.png");
       break;
-    case Factions.corporacion:
-      image = AssetImage("assets/factions/Corporacion.png");
+    case Factions.red:
+      image = AssetImage("assets/factions/red.png");
+      break;
+  }
+  return image;
+}
+
+AssetImage cardImage(Factions faction) {
+  AssetImage image;
+  switch (faction) {
+    case Factions.ninguno:
+      image = AssetImage("assets/cards/normalCard.png");
+      break;
+    case Factions.green:
+      image = AssetImage("assets/cards/greenCard.png");
+      break;
+    case Factions.blue:
+      image = AssetImage("assets/cards/blueCard.png");
+      break;
+    case Factions.yellow:
+      image = AssetImage("assets/cards/yellowCard.png");
+      break;
+    case Factions.red:
+      image = AssetImage("assets/cards/redCard.png");
       break;
   }
   return image;

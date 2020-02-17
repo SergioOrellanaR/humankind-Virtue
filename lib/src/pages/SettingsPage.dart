@@ -47,7 +47,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   DefaultTabController _tabController(int _initialTabIndex) {
     return DefaultTabController(
-      length: 3,
+      length: utils.allowAvatars ? 3 : 2,
       child: _mainScaffold(),
       initialIndex: _initialTabIndex,
     );
@@ -64,32 +64,49 @@ class _SettingsPageState extends State<SettingsPage> {
         centerTitle: true,
         backgroundColor: utils.mainThemeColor(
             prefs.isDarkTheme, Factions.values[prefs.faction]),
-        bottom: TabBar(tabs: [
-          Tab(icon: Icon(Icons.settings)),
-          Tab(icon: Icon(Icons.settings_system_daydream)),
-          Tab(icon: Icon(Icons.face)),
-        ], indicatorColor: Colors.white),
+        bottom: _tabBarInformation(),
       );
     } else {
       return AppBar(
         title: Text("Ajustes"),
         centerTitle: true,
-        bottom: TabBar(
-          tabs: [
-            Tab(icon: Icon(Icons.settings)),
-            Tab(icon: Icon(Icons.settings_system_daydream)),
-            Tab(icon: Icon(Icons.face)),
-          ],
-          indicatorColor: Colors.white,
-        ),
+        bottom: _tabBarInformation()
       );
     }
   }
 
+  TabBar _tabBarInformation() {
+    if(utils.allowAvatars)
+    {
+      return TabBar(tabs: [
+        Tab(icon: Icon(Icons.settings)),
+        Tab(icon: Icon(Icons.settings_system_daydream)),
+        Tab(icon: Icon(Icons.face)),
+      ], indicatorColor: Colors.white);
+    }
+    else
+    {
+      return TabBar(tabs: [
+        Tab(icon: Icon(Icons.settings)),
+        Tab(icon: Icon(Icons.settings_system_daydream))
+      ], indicatorColor: Colors.white);
+    }
+  }
+
   TabBarView _tabContent() {
-    return TabBarView(
+    if(utils.allowAvatars)
+    {
+      return TabBarView(
       children: <Widget>[_settingsTab(), _themeTab(), _avatarTab()],
     );
+    }
+    else
+    {
+      return TabBarView(
+      children: <Widget>[_settingsTab(), _themeTab()],
+    );
+    }
+    
   }
 
   ListView _settingsTab() {
@@ -276,10 +293,10 @@ class _SettingsPageState extends State<SettingsPage> {
     return Wrap(
         children: <Widget>[
           _containerTheme(faction: Factions.ninguno),
-          _containerTheme(faction: Factions.abismales),
-          _containerTheme(faction: Factions.quimera),
-          _containerTheme(faction: Factions.acracia),
-          _containerTheme(faction: Factions.corporacion)
+          _containerTheme(faction: Factions.green),
+          _containerTheme(faction: Factions.blue),
+          _containerTheme(faction: Factions.yellow),
+          _containerTheme(faction: Factions.red)
         ],
         direction: Axis.horizontal,
         spacing: _screenSize.width * 0.15,
@@ -293,7 +310,8 @@ class _SettingsPageState extends State<SettingsPage> {
     if (faction == null) {
       optionValue = isDarkTheme ? "Dark" : "Light";
     } else {
-      optionValue = utils.stringfiedFaction(faction);
+      //optionValue = utils.stringfiedFaction(faction);
+      optionValue = "";
     }
 
     return Column(children: <Widget>[

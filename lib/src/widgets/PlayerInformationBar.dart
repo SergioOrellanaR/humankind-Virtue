@@ -55,7 +55,7 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
         SizedBox(
           width: _screenSize.width * 0.02,
         ),
-        _avatarImage(),
+        utils.allowAvatars ? _avatarImage() : Container(),
       ],
       crossAxisAlignment: CrossAxisAlignment.end,
     );
@@ -64,7 +64,7 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
   _playerTwoInformation() {
     return Row(
       children: <Widget>[
-        _avatarImage(),
+        utils.allowAvatars ? _avatarImage() : Container(),
         SizedBox(
           width: _screenSize.width * 0.02,
         ),

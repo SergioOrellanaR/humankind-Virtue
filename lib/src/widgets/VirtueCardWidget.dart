@@ -19,7 +19,6 @@ class VirtueCard extends StatefulWidget {
 class _VirtueCardState extends State<VirtueCard>
     with SingleTickerProviderStateMixin {
   Size _screenSize;
-  String _cardImageUrl;
   VirtuesController _virtuesController;
   int _playerValue;
 
@@ -48,8 +47,6 @@ class _VirtueCardState extends State<VirtueCard>
   @override
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.of(context).size;
-    _cardImageUrl = prefs.isDarkTheme ? 'assets/card2.png' : 'assets/card1.png';
-    // return Center(child: _virtueTable());
     return _mainScreen();
   }
 
@@ -166,7 +163,7 @@ class _VirtueCardState extends State<VirtueCard>
   }
 
   DecorationImage _cardImage() {
-    return DecorationImage(image: AssetImage(_cardImageUrl), fit: BoxFit.fill);
+    return DecorationImage(image: utils.cardImage(Factions.values[prefs.faction]), fit: BoxFit.fill);
   }
 
   Column _stackedVirtueAndSpace(Faction faction, Virtue virtue) {

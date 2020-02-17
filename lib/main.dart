@@ -12,7 +12,7 @@ void main() async
   //InAppPurchaseConnection.enablePendingPurchases();
   final prefs = new UserConfig();
   await prefs.initPrefs();
-  await utils.loadAvatars();
+  //await utils.loadAvatars();
   runApp(MyApp(prefs: prefs));
 } 
 
