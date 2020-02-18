@@ -14,7 +14,7 @@ final bool allowAvatars = false;
 final String leftTab = 'assets/tabs/leftTab.png';
 final String rightTab = 'assets/tabs/rightTab.png';
 
-stringfiedFaction(Factions factEnum) {
+String stringfiedFaction(Factions factEnum) {
   int factionNameIndex = 1;
   String stringedValue = factEnum.toString();
   return StringUtils.capitalize(stringedValue.split('.')[factionNameIndex]);
@@ -200,4 +200,28 @@ loadAvatars() async {
     counter++;
   }
   globals.avatarsMap = mapInformation;
+}
+
+String storeString(String item)
+{
+  String value;
+  switch (item) {
+    case "Dark":
+      value = "dark.theme";
+      break;
+    case "Green":
+      value = "green.faction";
+      break;
+    case "Blue":
+      value = "blue.faction";
+      break;
+    case "Yellow":
+      value = "yellow.faction";
+      break;
+    case "Red":
+      value = "red.faction";
+      break;
+  }
+
+  return value;
 }

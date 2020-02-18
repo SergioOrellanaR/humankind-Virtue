@@ -2,12 +2,10 @@ import 'package:humankind/src/enums/FactionsEnum.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 export 'package:humankind/src/enums/FactionsEnum.dart';
 
-class UserConfig 
-{
-
+class UserConfig {
   static final UserConfig _instance = new UserConfig._private();
 
-  factory UserConfig(){
+  factory UserConfig() {
     return _instance;
   }
 
@@ -15,97 +13,87 @@ class UserConfig
 
   SharedPreferences _prefs;
 
-  initPrefs() async
-  {
+  initPrefs() async {
     this._prefs = await SharedPreferences.getInstance();
   }
 
-  get playerOne 
-  {
+  get playerOne {
     //Doble signo de interrogación para preguntar si es NULL
-    return _prefs.getString("playerOne")?? "Yo";
+    return _prefs.getString("playerOne") ?? "Yo";
   }
-  set playerOne(String value)
-  {
+
+  set playerOne(String value) {
     _prefs.setString("playerOne", value);
   }
 
-  get playerTwo 
-  {
-    return _prefs.getString("playerTwo")?? "Rival";
+  get playerTwo {
+    return _prefs.getString("playerTwo") ?? "Rival";
   }
-  set playerTwo(String value)
-  {
+
+  set playerTwo(String value) {
     _prefs.setString("playerTwo", value);
   }
 
-  get isDarkTheme 
-  {
+  get isDarkTheme {
     //Doble signo de interrogación para preguntar si es NULL
-    return _prefs.getBool("isDarkTheme")?? false;
+    return _prefs.getBool("isDarkTheme") ?? false;
   }
-  set isDarkTheme(bool value)
-  {
+
+  set isDarkTheme(bool value) {
     _prefs.setBool("isDarkTheme", value);
   }
 
-  get defaultWill 
-  {
+  get defaultWill {
     //Doble signo de interrogación para preguntar si es NULL
-    return _prefs.getInt("defaultWill")?? 6;
+    return _prefs.getInt("defaultWill") ?? 6;
   }
-  set defaultWill(int value)
-  {
+
+  set defaultWill(int value) {
     _prefs.setInt("defaultWill", value);
   }
 
-  get defaultStructure 
-  {
+  get defaultStructure {
     //Doble signo de interrogación para preguntar si es NULL
-    return _prefs.getInt("defaultStructure")?? 15;
+    return _prefs.getInt("defaultStructure") ?? 15;
   }
-  set defaultStructure(int value)
-  {
+
+  set defaultStructure(int value) {
     _prefs.setInt("defaultStructure", value);
   }
 
-  get faction 
-  {
+  get faction {
     //Doble signo de interrogación para preguntar si es NULL
     return _prefs.getInt("faction") ?? Factions.ninguno.index;
   }
-  set faction(Factions value)
-  {
+
+  set faction(Factions value) {
     _prefs.setInt("faction", value.index);
   }
 
-  get animationSpeed 
-  {
+  get animationSpeed {
     //Doble signo de interrogación para preguntar si es NULL
     return _prefs.getInt("animationSpeed") ?? 1600;
   }
-  set animationSpeed(int value)
-  {
+
+  set animationSpeed(int value) {
     _prefs.setInt("animationSpeed", value);
   }
 
-  get playerOneAvatar 
-  {
+  get playerOneAvatar {
     //Doble signo de interrogación para preguntar si es NULL
     return _prefs.getInt("playerOneAvatar") ?? 0;
   }
-  set playerOneAvatar(int value)
-  {
+
+  set playerOneAvatar(int value) {
     _prefs.setInt("playerOneAvatar", value);
   }
 
-  get playerTwoAvatar 
-  {
+  get playerTwoAvatar {
     //Doble signo de interrogación para preguntar si es NULL
     return _prefs.getInt("playerTwoAvatar") ?? 1;
   }
-  set playerTwoAvatar(int value)
-  {
+
+  set playerTwoAvatar(int value) {
     _prefs.setInt("playerTwoAvatar", value);
   }
 }

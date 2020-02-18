@@ -1,6 +1,8 @@
-import 'package:dynamic_theme/dynamic_theme.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:humankind/src/config/UserConfig.dart';
 import 'package:humankind/src/models/AvatarModel.dart';
 import 'package:humankind/utils/utils.dart' as utils;
@@ -11,6 +13,16 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  StreamSubscription<List<PurchaseDetails>> _subscription;
+  List<String> _unlockedItems;
+  List<String> _lockedItems = [
+    "dark.theme",
+    "green.faction",
+    "blue.faction",
+    "yellow.faction",
+    "red.faction"
+  ];
+
   String _playerOne;
   String _playerTwo;
   int _defaultWill;
@@ -22,11 +34,27 @@ class _SettingsPageState extends State<SettingsPage> {
   int _playerTwoAvatar;
   TextEditingController _textEditingController;
   Size _screenSize;
+  String _errorMessage;
   final prefs = new UserConfig();
 
   @override
   void initState() {
+    final Stream purchaseUpdates =
+        InAppPurchaseConnection.instance.purchaseUpdatedStream;
+    _subscription = purchaseUpdates.listen((purchases) {
+      _handlePurchaseUpdates(purchases);
+    });
     super.initState();
+    _loadPlayerData();
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+
+  void _loadPlayerData() {
     _playerOne = prefs.playerOne;
     _playerTwo = prefs.playerTwo;
     _defaultWill = prefs.defaultWill;
@@ -36,6 +64,23 @@ class _SettingsPageState extends State<SettingsPage> {
     _faction = Factions.values[prefs.faction];
     _playerOneAvatar = prefs.playerOneAvatar;
     _playerTwoAvatar = prefs.playerTwoAvatar;
+    _unlockedItems = null;
+  }
+
+  void _handlePurchaseUpdates(List<PurchaseDetails> purchaseDetailsList) {
+    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+      if (purchaseDetails.status == PurchaseStatus.purchased) {
+        _unlockItem(purchaseDetails.productID);
+        if (purchaseDetails.pendingCompletePurchase) {
+          await InAppPurchaseConnection.instance
+              .completePurchase(purchaseDetails);
+        }
+      }
+    });
+  }
+
+  Future<bool> _storeIsAvailable() async {
+    return await InAppPurchaseConnection.instance.isAvailable();
   }
 
   @override
@@ -68,24 +113,20 @@ class _SettingsPageState extends State<SettingsPage> {
       );
     } else {
       return AppBar(
-        title: Text("Ajustes"),
-        centerTitle: true,
-        bottom: _tabBarInformation()
-      );
+          title: Text("Ajustes"),
+          centerTitle: true,
+          bottom: _tabBarInformation());
     }
   }
 
   TabBar _tabBarInformation() {
-    if(utils.allowAvatars)
-    {
+    if (utils.allowAvatars) {
       return TabBar(tabs: [
         Tab(icon: Icon(Icons.settings)),
         Tab(icon: Icon(Icons.settings_system_daydream)),
         Tab(icon: Icon(Icons.face)),
       ], indicatorColor: Colors.white);
-    }
-    else
-    {
+    } else {
       return TabBar(tabs: [
         Tab(icon: Icon(Icons.settings)),
         Tab(icon: Icon(Icons.settings_system_daydream))
@@ -94,19 +135,15 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   TabBarView _tabContent() {
-    if(utils.allowAvatars)
-    {
+    if (utils.allowAvatars) {
       return TabBarView(
-      children: <Widget>[_settingsTab(), _themeTab(), _avatarTab()],
-    );
-    }
-    else
-    {
+        children: <Widget>[_settingsTab(), _themeFutureBuilder(), _avatarTab()],
+      );
+    } else {
       return TabBarView(
-      children: <Widget>[_settingsTab(), _themeTab()],
-    );
+        children: <Widget>[_settingsTab(), _themeFutureBuilder()],
+      );
     }
-    
   }
 
   ListView _settingsTab() {
@@ -306,33 +343,88 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Column _containerTheme({bool isDarkTheme, Factions faction}) {
     String optionValue;
+    bool itemIsAvailable = true;
 
     if (faction == null) {
       optionValue = isDarkTheme ? "Dark" : "Light";
+      if (isDarkTheme && _lockedItems.contains("dark.theme")) {
+        itemIsAvailable = false;
+      }
     } else {
-      //optionValue = utils.stringfiedFaction(faction);
-      optionValue = "";
+      optionValue = utils.stringfiedFaction(faction);
+      String factionStoreIdCode = "${optionValue.toLowerCase()}.faction";
+      if (faction != Factions.ninguno &&
+          _lockedItems.contains(factionStoreIdCode)) {
+        itemIsAvailable = false;
+      }
     }
 
     return Column(children: <Widget>[
-      _optionContainer(isDarkTheme: isDarkTheme, faction: faction),
-      _optionRadio(isDarkTheme: isDarkTheme, faction: faction),
+      _optionContainer(
+          isDarkTheme: isDarkTheme,
+          faction: faction,
+          itemIsAvailable: itemIsAvailable),
+      _optionRadio(
+          isDarkTheme: isDarkTheme,
+          faction: faction,
+          itemIsAvailable: itemIsAvailable),
       Text(optionValue)
     ]);
   }
 
-  GestureDetector _optionContainer({bool isDarkTheme, Factions faction}) {
+  GestureDetector _optionContainer(
+      {bool isDarkTheme, Factions faction, bool itemIsAvailable}) {
     return GestureDetector(
-      onTap: () => faction == null
-          ? _setSelectedTheme(isDarkTheme)
-          : _setSelectedFaction(faction),
-      child: Container(
-        height: _screenSize.height * 0.15,
-        width: _screenSize.height * 0.15,
-        decoration: faction == null
-            ? _darkThemeBoxDecoration(isDarkTheme)
-            : _factionBoxDecoration(faction),
+      onTap: () async {
+        if (itemIsAvailable) {
+          faction == null
+              ? _setSelectedTheme(isDarkTheme)
+              : _setSelectedFaction(faction);
+        } else {
+          await _buyItem(isDarkTheme, faction);
+        }
+      },
+      child: Stack(
+        children: <Widget>[
+          _optionContainerInformation(faction, isDarkTheme),
+          _blurredContainerSetter(faction, isDarkTheme, itemIsAvailable)
+        ],
       ),
+    );
+  }
+
+  _blurredContainerSetter(
+      Factions faction, bool isDarkTheme, bool itemIsAvailable) {
+    String price;
+
+    if (!itemIsAvailable) {
+      price = faction == null ? "1000" : "2000";
+    }
+
+    return price == null ? SizedBox() : _blurredContainer(price);
+  }
+
+  Container _blurredContainer(String price) {
+    return Container(
+      height: _screenSize.height * 0.15,
+      width: _screenSize.height * 0.15,
+      alignment: Alignment.center,
+      child: Text(r"$" + "$price",
+          style: TextStyle(
+              fontWeight: FontWeight.bold, backgroundColor: Colors.white24)),
+      decoration: BoxDecoration(
+        color: Colors.white70,
+      ),
+    );
+  }
+
+  Container _optionContainerInformation(Factions faction, bool isDarkTheme) {
+    return Container(
+      height: _screenSize.height * 0.15,
+      width: _screenSize.height * 0.15,
+      decoration: faction == null
+          ? _darkThemeBoxDecoration(isDarkTheme)
+          : _factionBoxDecoration(faction),
     );
   }
 
@@ -358,15 +450,20 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  Radio _optionRadio({bool isDarkTheme, Factions faction}) {
-    return Radio(
-        value: faction == null ? isDarkTheme : faction,
-        groupValue: faction == null ? _isDarkTheme : _faction,
-        onChanged: (value) {
-          faction == null
-              ? _setSelectedTheme(value)
-              : _setSelectedFaction(faction);
-        });
+  Radio _optionRadio(
+      {bool isDarkTheme, Factions faction, bool itemIsAvailable}) {
+    if (itemIsAvailable) {
+      return Radio(
+          value: faction == null ? isDarkTheme : faction,
+          groupValue: faction == null ? _isDarkTheme : _faction,
+          onChanged: (value) {
+            faction == null
+                ? _setSelectedTheme(value)
+                : _setSelectedFaction(faction);
+          });
+    } else {
+      return Radio(value: false, groupValue: null, onChanged: null);
+    }
   }
 
   void _setSelectedTheme(bool value) {
@@ -443,7 +540,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Text _illustratorText(String illustratorName) {
     TextStyle style = TextStyle(
-        fontStyle: FontStyle.italic, fontWeight: FontWeight.w400, fontSize: 9.6);
+        fontStyle: FontStyle.italic,
+        fontWeight: FontWeight.w400,
+        fontSize: 9.6);
     return Text(
       "Ilustrador: $illustratorName",
       style: style,
@@ -549,5 +648,132 @@ class _SettingsPageState extends State<SettingsPage> {
         ])),
       ],
     );
+  }
+
+  _buyItem(bool isDarkTheme, Factions faction) async {
+    String itemId;
+    if (faction == null) {
+      itemId = "dark.theme";
+    } else {
+      String factionString = utils.stringfiedFaction(faction);
+      itemId = "${factionString.toLowerCase()}.faction";
+    }
+    _startItemTransaction(itemId);
+  }
+
+  Widget _themeFutureBuilder() {
+    return FutureBuilder(
+      future: _loadProductsForSale(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Container(child: CircularProgressIndicator(), width: _screenSize.width * 0.4, height: _screenSize.height * 0.3);
+        } else {
+          if (_errorMessage != null) {   
+            return _errorBody(_errorMessage);
+          }
+          else
+          {
+            return _themeTab();
+          }
+        }
+      },
+    );
+  }
+
+  _loadPreviousPurchases() async {
+    _unlockedItems = new List();
+
+    final QueryPurchaseDetailsResponse response =
+        await InAppPurchaseConnection.instance.queryPastPurchases();
+
+    if (response.error != null) {
+      _errorMessage = "Error al cargar las compras previas";
+    }
+
+    for (PurchaseDetails purchase in response.pastPurchases) {
+      _unlockedItems.add(purchase.productID);
+    }
+
+    // _verifyPurchase(
+    //     purchase); // Verify the purchase following the best practices for each storefront.
+    // _deliverPurchase(
+    //     purchase); // Deliver the purchase to the user in your app.
+
+    // if (Platform.isIOS) {
+    //   // Mark that you've delivered the purchase. Only the App Store requires
+    //   // this final confirmation.
+    //   InAppPurchaseConnection.instance.completePurchase(purchase);
+    // }
+  }
+
+  _loadProductsForSale() async {
+    List<ProductDetails> products = new List();
+
+    if (await _storeIsAvailable()) {
+      await _loadPreviousPurchases();
+
+      List<String> itemsList = _lockedItems;
+      _lockedItems = new List();
+
+      for (String item in itemsList) {
+        if (!_unlockedItems.contains(item)) {
+          _lockedItems.add(item);
+        }
+      }
+
+      Set<String> _productsIds = _lockedItems.toSet();
+
+      final ProductDetailsResponse response = await InAppPurchaseConnection
+          .instance
+          .queryProductDetails(_productsIds);
+
+      if (response.notFoundIDs.isNotEmpty) {
+        _errorMessage = "No se ha podido acceder a los productos en la tienda";
+      }
+
+      products = response.productDetails;
+    } else {
+      _errorMessage = "No ha sido posible acceder a la tienda, verifique su conexión y que exista una cuenta vinculada a su dispositivo";
+    }
+
+    return products;
+  }
+
+  _errorBody(String errorText) {
+    return Center(
+      child: ListView(
+        shrinkWrap: true,
+        padding: EdgeInsets.fromLTRB(60.0, 0, 60.0, 60.0),
+        children: <Widget>[
+          Column(children: <Widget>[
+            Icon(Icons.sentiment_dissatisfied, size: 40),
+            Text(errorText, textAlign: TextAlign.center)
+          ])
+        ],
+      ),
+    );
+  }
+
+  _startItemTransaction(String requestedId) async {
+    List<ProductDetails> products = await _loadProductsForSale();
+
+    if (products.isNotEmpty) {
+      ProductDetails productDetails =
+          products.firstWhere((prod) => prod.id == requestedId);
+
+      if (productDetails != null) {
+        PurchaseParam purchaseParam =
+            PurchaseParam(productDetails: productDetails);
+        InAppPurchaseConnection.instance
+            .buyNonConsumable(purchaseParam: purchaseParam);
+      }
+    }
+  }
+
+  void _unlockItem(String productID) {
+    setState(() {
+      _lockedItems.removeWhere((value) => value == productID);
+      _unlockedItems.add(productID);
+    });
   }
 }

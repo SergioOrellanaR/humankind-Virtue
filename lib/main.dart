@@ -9,7 +9,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 void main() async
 {
   WidgetsFlutterBinding.ensureInitialized();
-  //InAppPurchaseConnection.enablePendingPurchases();
+  InAppPurchaseConnection.enablePendingPurchases();
   final prefs = new UserConfig();
   await prefs.initPrefs();
   //await utils.loadAvatars();
