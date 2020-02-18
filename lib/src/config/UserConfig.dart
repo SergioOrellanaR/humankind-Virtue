@@ -72,7 +72,7 @@ class UserConfig {
 
   get animationSpeed {
     //Doble signo de interrogación para preguntar si es NULL
-    return _prefs.getInt("animationSpeed") ?? 1600;
+    return _prefs.getInt("animationSpeed") ?? 900;
   }
 
   set animationSpeed(int value) {

@@ -22,6 +22,7 @@ class _SettingsPageState extends State<SettingsPage> {
     "yellow.faction",
     "red.faction"
   ];
+  List<String> _pendingItems = new List();
 
   String _playerOne;
   String _playerTwo;
@@ -69,12 +70,16 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _handlePurchaseUpdates(List<PurchaseDetails> purchaseDetailsList) {
     purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
-      if (purchaseDetails.status == PurchaseStatus.purchased) {
-        _unlockItem(purchaseDetails.productID);
+      if (purchaseDetails.status == PurchaseStatus.error) {
+      } else if (purchaseDetails.status == PurchaseStatus.purchased) {
         if (purchaseDetails.pendingCompletePurchase) {
+          _unlockItem(purchaseDetails.productID);
           await InAppPurchaseConnection.instance
               .completePurchase(purchaseDetails);
         }
+      } else if (purchaseDetails.status == PurchaseStatus.pending) 
+      {
+        _pendingItems.add(purchaseDetails.productID);
       }
     });
   }
@@ -396,22 +401,39 @@ class _SettingsPageState extends State<SettingsPage> {
   _blurredContainerSetter(
       Factions faction, bool isDarkTheme, bool itemIsAvailable) {
     String price;
+    String pending = "";
+    String pendingStoreIdCode;
 
     if (!itemIsAvailable) {
-      price = faction == null ? "1000" : "2000";
+      if (faction == null) {
+        pendingStoreIdCode = "dark.theme";
+        price = "1000";
+      } else {
+        String optionValue = utils.stringfiedFaction(faction);
+        pendingStoreIdCode = "${optionValue.toLowerCase()}.faction";
+        price = "2000";
+      }
     }
 
-    return price == null ? SizedBox() : _blurredContainer(price);
+    if (pendingStoreIdCode != null &&
+        _pendingItems.contains(pendingStoreIdCode)) {
+      pending = "Pendiente: ";
+    }
+
+    return price == null ? SizedBox() : _blurredContainer(pending, price);
   }
 
-  Container _blurredContainer(String price) {
+  Container _blurredContainer(String pending, String price) {
     return Container(
       height: _screenSize.height * 0.15,
       width: _screenSize.height * 0.15,
       alignment: Alignment.center,
-      child: Text(r"$" + "$price",
-          style: TextStyle(
-              fontWeight: FontWeight.bold, backgroundColor: Colors.white24)),
+      child: Text(
+        "$pending" + r"$" + "$price",
+        style: TextStyle(
+            fontWeight: FontWeight.bold, backgroundColor: Colors.white24),
+        textAlign: TextAlign.center,
+      ),
       decoration: BoxDecoration(
         color: Colors.white70,
       ),
@@ -632,7 +654,7 @@ class _SettingsPageState extends State<SettingsPage> {
         Container(
             child: Row(children: <Widget>[
           Text(
-            "Developed by: Sergio Orellana Rey - V.A${utils.version}",
+            "Developed by: Sergio Orellana Rey - V.${utils.version}",
             style: TextStyle(fontSize: 12.5),
           ),
           Expanded(child: SizedBox()),
@@ -665,16 +687,10 @@ class _SettingsPageState extends State<SettingsPage> {
     return FutureBuilder(
       future: _loadProductsForSale(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Container(child: CircularProgressIndicator(), width: _screenSize.width * 0.4, height: _screenSize.height * 0.3);
+        if (_errorMessage != null) {
+          return _errorBody(_errorMessage);
         } else {
-          if (_errorMessage != null) {   
-            return _errorBody(_errorMessage);
-          }
-          else
-          {
-            return _themeTab();
-          }
+          return _themeTab();
         }
       },
     );
@@ -682,6 +698,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   _loadPreviousPurchases() async {
     _unlockedItems = new List();
+    _pendingItems = new List();
 
     final QueryPurchaseDetailsResponse response =
         await InAppPurchaseConnection.instance.queryPastPurchases();
@@ -691,7 +708,14 @@ class _SettingsPageState extends State<SettingsPage> {
     }
 
     for (PurchaseDetails purchase in response.pastPurchases) {
-      _unlockedItems.add(purchase.productID);
+      if (purchase.status == PurchaseStatus.purchased) {
+        _unlockedItems.add(purchase.productID);
+      } else if (purchase.status == PurchaseStatus.pending) {
+          _pendingItems.add(purchase.productID);
+        setState(() {
+        });
+        
+      }
     }
 
     // _verifyPurchase(
@@ -733,7 +757,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
       products = response.productDetails;
     } else {
-      _errorMessage = "No ha sido posible acceder a la tienda, verifique su conexión y que exista una cuenta vinculada a su dispositivo";
+      _errorMessage =
+          "No ha sido posible acceder a la tienda, verifique su conexión y que exista una cuenta vinculada a su dispositivo";
     }
 
     return products;
@@ -764,7 +789,7 @@ class _SettingsPageState extends State<SettingsPage> {
       if (productDetails != null) {
         PurchaseParam purchaseParam =
             PurchaseParam(productDetails: productDetails);
-        InAppPurchaseConnection.instance
+        await InAppPurchaseConnection.instance
             .buyNonConsumable(purchaseParam: purchaseParam);
       }
     }
