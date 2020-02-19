@@ -77,8 +77,7 @@ class _SettingsPageState extends State<SettingsPage> {
           await InAppPurchaseConnection.instance
               .completePurchase(purchaseDetails);
         }
-      } else if (purchaseDetails.status == PurchaseStatus.pending) 
-      {
+      } else if (purchaseDetails.status == PurchaseStatus.pending) {
         _pendingItems.add(purchaseDetails.productID);
       }
     });
@@ -92,39 +91,39 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.of(context).size;
     int _initialTabIndex = ModalRoute.of(context).settings.arguments ?? 0;
-    return _tabController(_initialTabIndex);
+    return _tabController(_initialTabIndex, context);
   }
 
-  DefaultTabController _tabController(int _initialTabIndex) {
+  DefaultTabController _tabController(int _initialTabIndex, context) {
     return DefaultTabController(
       length: utils.allowAvatars ? 3 : 2,
-      child: _mainScaffold(),
+      child: _mainScaffold(context),
       initialIndex: _initialTabIndex,
     );
   }
 
-  Scaffold _mainScaffold() {
-    return Scaffold(appBar: _appBar(), body: _tabContent());
+  Scaffold _mainScaffold(context) {
+    return Scaffold(appBar: _appBar(context), body: _tabContent());
   }
 
-  AppBar _appBar() {
+  AppBar _appBar(context) {
     if (prefs.faction != Factions.ninguno.index) {
       return AppBar(
         title: Text("Ajustes"),
         centerTitle: true,
         backgroundColor: utils.mainThemeColor(
             prefs.isDarkTheme, Factions.values[prefs.faction]),
-        bottom: _tabBarInformation(),
+        bottom: _tabBarInformation(context),
       );
     } else {
       return AppBar(
           title: Text("Ajustes"),
           centerTitle: true,
-          bottom: _tabBarInformation());
+          bottom: _tabBarInformation(context));
     }
   }
 
-  TabBar _tabBarInformation() {
+  TabBar _tabBarInformation(context) {
     if (utils.allowAvatars) {
       return TabBar(tabs: [
         Tab(icon: Icon(Icons.settings)),
@@ -687,6 +686,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return FutureBuilder(
       future: _loadProductsForSale(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
+        FocusScope.of(context).unfocus();
         if (_errorMessage != null) {
           return _errorBody(_errorMessage);
         } else {
@@ -711,10 +711,8 @@ class _SettingsPageState extends State<SettingsPage> {
       if (purchase.status == PurchaseStatus.purchased) {
         _unlockedItems.add(purchase.productID);
       } else if (purchase.status == PurchaseStatus.pending) {
-          _pendingItems.add(purchase.productID);
-        setState(() {
-        });
-        
+        _pendingItems.add(purchase.productID);
+        setState(() {});
       }
     }
 
