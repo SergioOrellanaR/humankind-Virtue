@@ -49,11 +49,11 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
         _expanded(),
         _willInformation(),
         SizedBox(
-          width: _screenSize.width * 0.058,
+          width: _screenSize.width * 0.1,
         ),
         _structureInformation(),
         SizedBox(
-          width: _screenSize.width * 0.02,
+          width: _screenSize.width * 0.05,
         ),
         utils.allowAvatars ? _avatarImage() : Container(),
       ],
@@ -66,11 +66,11 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
       children: <Widget>[
         utils.allowAvatars ? _avatarImage() : Container(),
         SizedBox(
-          width: _screenSize.width * 0.02,
+          width: _screenSize.width * 0.05,
         ),
         _structureInformation(),
         SizedBox(
-          width: _screenSize.width * 0.058,
+          width: _screenSize.width * 0.1,
         ),
         _willInformation(),
         _expanded()
@@ -101,6 +101,7 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
   Icon _fakeIcon() => Icon(
         Icons.lock_outline,
         color: Colors.transparent,
+        size: _screenSize.height * 0.04,
       );
 
   Expanded _expanded() {
@@ -130,7 +131,7 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
       onPointerUp: (details) {
         _buttonPressedOnOperation = false;
       },
-      child: add ? Icon(Icons.add) : Icon(Icons.remove),
+      child: add ? Icon(Icons.add, size: _screenSize.width * 0.07,) : Icon(Icons.remove, size: _screenSize.width * 0.07),
     );
   }
 
@@ -174,8 +175,8 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
         }
       },
       child: Container(
-        width: _screenSize.width * 0.12,
-        height: _screenSize.width * 0.12,
+        width: _screenSize.width * 0.15,
+        height: _screenSize.width * 0.15,
         child: _valueToCounter(isWill: isWill),
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -197,11 +198,11 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
         : _structurePoints.toString();
 
     TextStyle style =
-        TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
+        TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 17);
 
     if (isWill && value.length >= 4) {
       style = TextStyle(
-          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11);
+          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14);
     }
 
     return Text(value, style: style);
@@ -232,7 +233,7 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
             _savedWill = _willPoints;
           });
         },
-        child: Icon(Icons.lock_outline));
+        child: Icon(Icons.lock_outline, size: _screenSize.height*0.04,));
   }
 
   Column _avatarImage() {
@@ -288,6 +289,6 @@ class _PlayerInformationBarState extends State<PlayerInformationBar> {
   {
     return GestureDetector(
       onTap: _refillWill,
-      child: Icon(Icons.undo),);
+      child: Icon(Icons.undo, size: _screenSize.height*0.04,),);
   }
 }
